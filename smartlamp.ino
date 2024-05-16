@@ -38,7 +38,8 @@ void processCommand(String command) {
         Serial.println(map(ledValue, 0, 255, 0, 100));
     } else if (command.startsWith("GET_LDR")) {
         Serial.print("RES GET_LDR ");
-        Serial.println(ldrGetValue());
+        int ldrValue = ldrGetValue();
+        Serial.println(map(ldrValue, 0, ldrMax, 0, 100));
     } else {
         Serial.println("ERR Unknown command.");
     }
