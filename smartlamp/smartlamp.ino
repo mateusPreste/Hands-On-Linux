@@ -1,11 +1,11 @@
 // Defina os pinos de LED e LDR
 // Defina uma variável com valor máximo do LDR (4000)
 // Defina uma variável para guardar o valor atual do LED (10)
-int ledPin;
-int ledValue;
+int ledPin = 22;
+int ledValue = 10;
 
-int ldrPin;
-int ldrMax;
+int ldrPin = 36;
+int ldrMax = 4000;
 
 void setup() {
     Serial.begin(9600);
@@ -15,6 +15,7 @@ void setup() {
     
     Serial.printf("SmartLamp Initialized.\n");
 
+
     
 }
 
@@ -22,6 +23,17 @@ void setup() {
 void loop() {
     //Obtenha os comandos enviados pela serial 
     //e processe-os com a função processCommand
+    // Check if data is available to read
+    if (Serial.available() > 0) {
+      // Read the incoming byte
+      char incomingByte = Serial.read();
+
+      // Print the incoming byte to the Serial Monitor
+      Serial.print("Received: ");
+      Serial.println(incomingByte);
+    }
+
+    // You can add your logic here based on the received data
 }
 
 
@@ -36,5 +48,5 @@ void ledUpdate() {
 
 // Função para ler o valor do LDR
 int ldrGetValue() {
-    // Leia o sensor LDR e retorne o valor normalizado
+    // Leia o sensor LDR e retorne o valor normalizado.
 }
