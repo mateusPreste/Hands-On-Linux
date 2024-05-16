@@ -24,14 +24,8 @@ void loop() {
     //Obtenha os comandos enviados pela serial 
     //e processe-os com a função processCommand
     // Check if data is available to read
-    if (Serial.available() > 0) {
-      // Read the incoming byte
-      char incomingByte = Serial.read();
-
-      // Print the incoming byte to the Serial Monitor
-      Serial.print("Received: ");
-      Serial.println(incomingByte);
-    }
+    ledUpdate(255);
+    
 
     // You can add your logic here based on the received data
 }
@@ -42,8 +36,14 @@ void processCommand(String command) {
 }
 
 // Função para atualizar o valor do LED
-void ledUpdate() {
-    // Normalize o valor do LED antes de enviar para a porta correspondente
+void ledUpdate(int led_intensity) {
+    if(led_intensity >= 0 && led_intensity <= 100) {
+        ledValue = led_intensity;
+        analogWrite(ledPin, ledValue);
+        Serial.println('RES SET_LED 1')
+    } else {
+        Serial.println('RES SET_LED -1')
+    }
 }
 
 // Função para ler o valor do LDR
