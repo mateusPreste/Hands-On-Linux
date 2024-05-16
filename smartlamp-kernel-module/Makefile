@@ -1,4 +1,4 @@
-obj-m += smartlamp-kernel-module.o
+obj-m += probe.o
 PWD := $(CURDIR)
 
 all:
