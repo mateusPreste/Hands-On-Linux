@@ -26,7 +26,7 @@ void loop() {
     // Check if data is available to read
     if (Serial.available() > 0) {
       // Read the incoming byte
-      char incomingByte = Serial.read();
+      string incomingByte = Serial.read();
 
       // Print the incoming byte to the Serial Monitor
       Serial.print("Received: ");
@@ -49,4 +49,6 @@ void ledUpdate() {
 // Função para ler o valor do LDR
 int ldrGetValue() {
     // Leia o sensor LDR e retorne o valor normalizado.
+    int sensorValue=analogRead(ldrPin);
+    return sensorValue*255/ldrMax;
 }
