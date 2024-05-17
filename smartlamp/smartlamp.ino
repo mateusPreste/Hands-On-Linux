@@ -21,6 +21,7 @@ void loop() {
     //Obtenha os comandos enviados pela serial 
     //e processe-os com a função processCommand
 
+
     // Debugging LDR
     Serial.printf("[LDR] Value: %d\n", ldrGetValue());
     delay(200);
@@ -32,8 +33,14 @@ void processCommand(String command) {
 }
 
 // Função para atualizar o valor do LED
-void ledUpdate() {
-    // Normalize o valor do LED antes de enviar para a porta correspondente
+void ledUpdate(int led_intensity) {
+    if(led_intensity >= 0 && led_intensity <= 100) {
+        ledValue = led_intensity;
+        analogWrite(ledPin, ledValue);
+        Serial.println('RES SET_LED 1')
+    } else {
+        Serial.println('RES SET_LED -1')
+    }
 }
 
 // Função para ler o valor do LDR
