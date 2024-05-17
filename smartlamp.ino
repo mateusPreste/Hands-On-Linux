@@ -5,6 +5,7 @@ int ledPin;
 int ledValue;
 
 int ldrPin;
+// Faça testes no sensor ldr para encontrar o valor maximo e atribua a variável ldrMax
 int ldrMax;
 
 void setup() {
@@ -15,7 +16,7 @@ void setup() {
     
     Serial.printf("SmartLamp Initialized.\n");
 
-    
+
 }
 
 // Função loop será executada infinitamente pelo ESP32
@@ -31,10 +32,13 @@ void processCommand(String command) {
 
 // Função para atualizar o valor do LED
 void ledUpdate() {
+    // Valor deve convertar o valor recebido pelo comando SET_LED para 0 e 255
     // Normalize o valor do LED antes de enviar para a porta correspondente
 }
 
 // Função para ler o valor do LDR
 int ldrGetValue() {
-    // Leia o sensor LDR e retorne o valor normalizado
+    // Leia o sensor LDR e retorne o valor normalizado entre 0 e 100
+    // faça testes para encontrar o valor maximo do ldr (exemplo: aponte a lanterna do celular para o sensor)       
+    // Atribua o valor para a variável ldrMax e utilize esse valor para a normalização
 }
