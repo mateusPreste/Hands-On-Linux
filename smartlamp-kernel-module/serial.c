@@ -53,6 +53,7 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
 
     LDR_value = usb_read_serial();
 
+
     printk("LDR Value: %d\n", LDR_value);
 
     return 0;
@@ -66,11 +67,13 @@ static void usb_disconnect(struct usb_interface *interface) {
 }
 
 static int get_int_from_buffer(const char* buffer, const char* target_string) {
+    printk(KERN_INFO "get_int_from_buffer");
     char *ptr = strstr(buffer, target_string);
     if (ptr != NULL) {
         ptr += strlen(target_string);
         char *endptr;
         int result = (int)kstrtol(ptr, &endptr, 10);
+        printk(KERN_INFO "result is: %d", result);
 
         if (endptr != ptr) {
             return result;
@@ -90,13 +93,19 @@ static int usb_read_serial() {
         // Lê os dados da porta serial e armazena em usb_in_buffer
             // usb_in_buffer - contem a resposta em string do dispositivo
             // actual_size - contem o tamanho da resposta em bytes
-        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
+        int str_length = min(usb_max_size, MAX_RECV_LINE);
+        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, str_length, &actual_size, 1000);
 
         
         if (ret) {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
         }
+        int i = 0;
+        for (i = 0; i < str_length; i++) {
+            printk("%c",usb_in_buffer[i]);
+        }
+        //printk(KERN_INFO "%s",usb_in_buffer);
 
         int int_value =  get_int_from_buffer(usb_in_buffer, "RES_LDR ");
 
