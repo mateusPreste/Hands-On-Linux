@@ -70,14 +70,14 @@ static int get_int_from_buffer(const char* buffer, const char* target_string) {
     if (ptr != NULL) {
         ptr += strlen(target_string);
         char *endptr;
-        int result = (int)strtol(ptr, &endptr, 10);
+        int result = (int)kstrtol(ptr, &endptr, 10);
 
         if (endptr != ptr) {
-            return result
+            return result;
         }
-    } else {
-        return -9999;
-    }
+    } 
+
+    return -9999;
 }
 
 static int usb_read_serial() {
@@ -86,6 +86,7 @@ static int usb_read_serial() {
 
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
+        printk(KERN_INFO "Tentativa de leitura do serial");
         // Lê os dados da porta serial e armazena em usb_in_buffer
             // usb_in_buffer - contem a resposta em string do dispositivo
             // actual_size - contem o tamanho da resposta em bytes
