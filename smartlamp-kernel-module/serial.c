@@ -1,6 +1,8 @@
 #include <linux/module.h>
 #include <linux/usb.h>
 #include <linux/slab.h>
+#include <string.h>
+#include <stdlib.h>
 
 MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
 MODULE_DESCRIPTION("Driver de acesso ao SmartLamp (ESP32 com Chip Serial CP2102");
@@ -92,9 +94,7 @@ static int usb_read_serial() {
 
         // Extrai o valor de X após 'RES_LDR'
         start += strlen("RES_LDR "); // Move o ponteiro para o início do valor de X
-        int value = 0;
-
-        sscanf(start, "%d", &value);
+        int value = atoi(start);
 
         return value;
     }
