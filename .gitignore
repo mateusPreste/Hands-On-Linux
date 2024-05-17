@@ -1,0 +1,12 @@
+smartlamp-kernel-module/.Module.symvers.cmd
+smartlamp-kernel-module/.modules.order.cmd
+smartlamp-kernel-module/.probe.ko.cmd
+smartlamp-kernel-module/.probe.mod.cmd
+smartlamp-kernel-module/.probe.mod.o.cmd
+smartlamp-kernel-module/.probe.o.cmd
+smartlamp-kernel-module/Module.symvers
+smartlamp-kernel-module/modules.order
+smartlamp-kernel-module/probe.mod
+smartlamp-kernel-module/probe.mod.c
+smartlamp-kernel-module/probe.mod.o
+smartlamp-kernel-module/probe.o
