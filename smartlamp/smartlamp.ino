@@ -18,13 +18,11 @@ void setup() {
 
 // Função loop será executada infinitamente pelo ESP32
 void loop() {
-    //Obtenha os comandos enviados pela serial 
+    //Obtenha os comandos enviados pela serial
+    String cmd = Serial.readString();
+
     //e processe-os com a função processCommand
-
-
-    // Debugging LDR
-    Serial.printf("[LDR] Value: %d\n", ldrGetValue());
-    delay(200);
+    processCommand(cmd);
 }
 
 
@@ -37,9 +35,9 @@ void ledUpdate(int led_intensity) {
     if(led_intensity >= 0 && led_intensity <= 100) {
         ledValue = led_intensity;
         analogWrite(ledPin, ledValue);
-        Serial.println('RES SET_LED 1')
+        Serial.println("RES SET_LED 1");
     } else {
-        Serial.println('RES SET_LED -1')
+        Serial.println("RES SET_LED -1");
     }
 }
 
@@ -51,4 +49,10 @@ int ldrGetValue() {
       return 255;
     }
     return value*255/ldrMax;
+}
+
+// Função para ler o valor do LED
+int ledGetValue() {
+    Serial.printf("RES GET_LED ");
+    Serial.println(ledValue);
 }
