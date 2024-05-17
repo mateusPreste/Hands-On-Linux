@@ -1,11 +1,11 @@
 // Defina os pinos de LED e LDR
 // Defina uma variável com valor máximo do LDR (4000)
 // Defina uma variável para guardar o valor atual do LED (10)
-int ledPin;
-int ledValue;
+int ledPin = 23;
+int ledValue = 10;
 
-int ldrPin;
-int ldrMax;
+int ldrPin = 36;
+int ldrMax = 4000;
 
 void setup() {
     Serial.begin(9600);
@@ -14,14 +14,23 @@ void setup() {
     pinMode(ldrPin, INPUT);
     
     Serial.printf("SmartLamp Initialized.\n");
-
-    
 }
 
 // Função loop será executada infinitamente pelo ESP32
 void loop() {
     //Obtenha os comandos enviados pela serial 
     //e processe-os com a função processCommand
+
+    // Debugging LDR
+    /*int value = analogRead(ldrPin);
+    Serial.printf("[LDR] Current resistance value: %d\n", value);
+    delay(1000);*/
+
+    // Debugging LED
+    /*digitalWrite(ledPin, HIGH);
+    delay(1000);
+    digitalWrite(ledPin, LOW);
+    delay(1000);*/
 }
 
 
@@ -36,5 +45,10 @@ void ledUpdate() {
 
 // Função para ler o valor do LDR
 int ldrGetValue() {
-    // Leia o sensor LDR e retorne o valor normalizado
+    // Leia o sensor LDR e retorne o valor normalizado.
+    int value=analogRead(ldrPin);
+    if(value >= ldrMax){
+      return 255;
+    }
+    return value*255/ldrMax;
 }
