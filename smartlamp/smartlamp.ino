@@ -38,10 +38,10 @@ void processCommand(String command) {
         ledUpdate(intensity);
     }
     } else if (command.equals("GET_LED")) {
-        ledGetValue()
+        ledGetValue();
     }
     else if (command.equals("GET_LDR")) {
-        ldrGetValue()
+        ldrGetValue();
     }
 }
 
