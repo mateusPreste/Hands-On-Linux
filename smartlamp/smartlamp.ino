@@ -28,6 +28,21 @@ void loop() {
 
 void processCommand(String command) {
     // compare o comando com os comandos possíveis e execute a ação correspondente      
+    command.trim();
+
+    if (command.startsWith("SET_LED")) {
+        int pos = command.indexOf(' ');
+        if (pos != -1) {
+        String intensityString = command.substring(pos + 1);
+        int intensity = intensityString.toInt();
+        ledUpdate(intensity);
+    }
+    } else if (command.equals("GET_LED")) {
+        ledGetValue()
+    }
+    else if (command.equals("GET_LDR")) {
+        ldrGetValue()
+    }
 }
 
 // Função para atualizar o valor do LED
