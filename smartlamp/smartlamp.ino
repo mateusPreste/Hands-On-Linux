@@ -22,15 +22,8 @@ void loop() {
     //e processe-os com a função processCommand
 
     // Debugging LDR
-    /*int value = analogRead(ldrPin);
-    Serial.printf("[LDR] Current resistance value: %d\n", value);
-    delay(1000);*/
-
-    // Debugging LED
-    /*digitalWrite(ledPin, HIGH);
-    delay(1000);
-    digitalWrite(ledPin, LOW);
-    delay(1000);*/
+    Serial.printf("[LDR] Value: %d\n", ldrGetValue());
+    delay(200);
 }
 
 
