@@ -12,9 +12,7 @@ void setup() {
     pinMode(ldrPin, INPUT);
     Serial.printf("SmartLamp Initialized.\n");
 
-    Serial.print("RES GET_LDR ");
-    int ldrValue = ldrGetValue();
-    Serial.println(map(ldrValue, 0, ldrMax, 0, 100));
+   processCommand("GET_LDR");
 }
 
 // Função loop será executada infinitamente pelo ESP32
@@ -22,9 +20,7 @@ void loop() {
   if (Serial.available() > 0) {
     String command = Serial.readStringUntil('\n');
     processCommand(command);
-  }
-  
-        
+  }    
 }
 
 void processCommand(String command) {

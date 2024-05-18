@@ -72,15 +72,15 @@ static int get_int_from_buffer(const char* buffer, const char* target_string) {
     char *ptr = strstr(buffer, target_string);
     int i = 0;
     while (buffer[i++] != '\0') {
-        if (buffer[i] != '1' || 
-        buffer[i] != '2' || 
-        buffer[i] != '3' || 
-        buffer[i] != '4' || 
-        buffer[i] != '5' || 
-        buffer[i] != '6' || 
-        buffer[i] != '7' || 
-        buffer[i] != '8' || 
-        buffer[i] != '9' || 
+        if (buffer[i] != '1' && 
+        buffer[i] != '2' && 
+        buffer[i] != '3' && 
+        buffer[i] != '4' && 
+        buffer[i] != '5' && 
+        buffer[i] != '6' && 
+        buffer[i] != '7' && 
+        buffer[i] != '8' && 
+        buffer[i] != '9' && 
         buffer[i] != '0') {
             buffer[i] = '\0';
             break;
