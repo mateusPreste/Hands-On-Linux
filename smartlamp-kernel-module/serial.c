@@ -12,7 +12,7 @@ MODULE_LICENSE("GPL");
 
 static struct usb_device *smartlamp_device;        // Referência para o dispositivo USB
 static uint usb_in, usb_out;                       // Endereços das portas de entrada e saida da USB
-static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
+static char *usb_in_buffer, *usb_out_buffer, *buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
 #define VENDOR_ID   0x10c4 /* Encontre o VendorID  do smartlamp */
@@ -50,6 +50,7 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_out = usb_endpoint_out->bEndpointAddress;
     usb_in_buffer = kmalloc(usb_max_size, GFP_KERNEL);
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
+    buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
     LDR_value = usb_read_serial();
 
@@ -69,15 +70,34 @@ static void usb_disconnect(struct usb_interface *interface) {
 static int get_int_from_buffer(const char* buffer, const char* target_string) {
     printk(KERN_INFO "get_int_from_buffer");
     char *ptr = strstr(buffer, target_string);
+    int i = 0;
+    while (buffer[i++] != '\0') {
+        if (buffer[i] != '1' || 
+        buffer[i] != '2' || 
+        buffer[i] != '3' || 
+        buffer[i] != '4' || 
+        buffer[i] != '5' || 
+        buffer[i] != '6' || 
+        buffer[i] != '7' || 
+        buffer[i] != '8' || 
+        buffer[i] != '9' || 
+        buffer[i] != '0') {
+            buffer[i] = '\0';
+            break;
+        }
+    }
     if (ptr != NULL) {
         ptr += strlen(target_string);
-        char *endptr;
-        int result = (int)kstrtol(ptr, &endptr, 10);
+        printk(KERN_INFO "/'%s/'", ptr);
+        long endptr;
+
+        int result = kstrtol(ptr, 10, &endptr);
         printk(KERN_INFO "result is: %d", result);
 
-        if (endptr != ptr) {
-            return result;
+        if (result) {
+            return -9999;
         }
+        return (int)endptr;
     } 
 
     return -9999;
@@ -86,6 +106,8 @@ static int get_int_from_buffer(const char* buffer, const char* target_string) {
 static int usb_read_serial() {
     int ret, actual_size;
     int retries = 10;                       // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
+    char* match = "RES GET_LDR ";
+     int j = 0;
 
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
@@ -101,21 +123,75 @@ static int usb_read_serial() {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
         }
+
         int i = 0;
-        for (i = 0; i < str_length; i++) {
-            printk("%c",usb_in_buffer[i]);
+       
+        
+
+        for (i = 0; i < actual_size; i++) {
+            //printk(KERN_INFO "%s", buffer);
+            buffer[j++] = usb_in_buffer[i];
+            if (usb_in_buffer[i] == '\n') {
+                buffer[j] = '\0';
+                printk(KERN_INFO "%s", buffer);
+                int result = get_int_from_buffer(buffer, "RES GET_LDR ");
+                if (result != -9999)
+                    return result;
+                j = 0;
+                buffer[j+1] = '\0';
+            }
         }
+
+
+
+
+
+
+
+
+
+
+        
+        // printk(KERN_INFO "actual_size: %d", actual_size);
+        // if (actual_size < 20) {
+        //     printk(KERN_INFO "%c", usb_in_buffer[0]);
+        //     continue;
+        // }
+        // for (i = 0; i < actual_size; i++) {
+        //     printk("%c",usb_in_buffer[i]);
+        //     char current_char = usb_in_buffer[i];
+        //     if (current_char == '\0') {
+        //         continue;
+        //     }
+        //     if (current_char == '\n') {
+        //         current_char = '\0';
+        //     }
+            
+        //     buffer[j] = current_char;
+        //     if (buffer[j] == '\0') {
+        //         printk(KERN_INFO "%s", buffer);
+        //         int int_value =  get_int_from_buffer(buffer, "RES GET_LDR ");
+        //         if (int_value != -9999)
+        //             return int_value;
+        //         j = 0;
+        //         continue;
+        //     }
+        //     j++;
+            
+        //}
+
         //printk(KERN_INFO "%s",usb_in_buffer);
 
-        int int_value =  get_int_from_buffer(usb_in_buffer, "RES_LDR ");
+        //int int_value =  get_int_from_buffer(usb_in_buffer, "RES GET_LDR ");
 
-        if (int_value != -9999)
-            return int_value;
+        //if (int_value != -9999)
+            //return int_value;
 
         //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
         //retorne o valor de X em inteiro
-        return 0;
+        
     }
+
 
     return -1; 
 }
