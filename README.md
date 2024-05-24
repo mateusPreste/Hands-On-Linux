@@ -1,8 +1,6 @@
+# DevTITANS 05 - HandsOn Linux - Equipe 02
 
-
-# DevTITANS 05 - HandsOn Linux - Equipe 0X
-
-Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este projeto contém um firmware para o ESP32 escrito em formato Arduino `.ino`, bem como um driver do kernel Linux escrito em C. O objetivo é demonstrar como criar uma solução completa de hardware e software que integra um dispositivo ESP32 com um sistema Linux.
+Bem-vindo ao repositório da Equipe 02 do HandsON de Linux do DevTITANS! Este projeto contém um firmware para o ESP32 escrito em formato Arduino `.ino`, bem como um driver do kernel Linux escrito em C. O objetivo é demonstrar como criar uma solução completa de hardware e software que integra um dispositivo ESP32 com um sistema Linux.
 
 ## Tabela de Conteúdos
 
@@ -17,18 +15,20 @@ Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este pr
 
 ## Contribuidores
 
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
+<img src="assets/matheus_carta.png" width="180" >
+<img src="assets/ricardo_carta.png" width="180" >
+<!-- <img src="assets/nome_carta.png" width="180" >
+<img src="assets/nome_carta.png" width="180" >
+<img src="assets/nome_carta.png" width="180" >
+<img src="assets/nome_carta.png" width="180" > -->
 
-- **Nome do(a) Aluno(a) 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Nome do(a) Aluno(a) 02:** Desenvolvedor do Firmware
-- **Nome do(a) Aluno(a) 03:** Desenvolvedor do Driver Linux
+
+- **Matheus Silva dos Santos:** Desenvolvedor do Firmware e Escritor da Documentação
+- **Ricardo Augusto Silva Bonfim:** Desenvolvedor do Firmware
+- **Hendrio Medeiros Marques:** Desenvolvedor do Driver Linux e Mantenedor do Projeto
 - **Nome do(a) Aluno(a) 04:** Desenvolvedor do Driver Linux
-- **Nome do(a) Aluno(a) 05:** Desenvolvedor do Firmware e Escritor da Documentação
+- **Nome do(a) Aluno(a) 05:** Desenvolvedor do Driver Linux
+- **Nome do(a) Aluno(a) 06:** Desenvolvedor do Driver Linux
 
 ## Introdução
 
@@ -95,7 +95,7 @@ Este projeto serve como um exemplo para desenvolvedores interessados em construi
 
 1. **Clone o Repositório:**
     ```sh
-    git clone https://github.com/seuusuario/Hands-On-Linux.git
+    git clone https://github.com/hendriomm/Hands-On-Linux.git
     cd Hands-On-Linux
     ```
 
@@ -141,4 +141,4 @@ Depois que o driver e o firmware estiverem configurados, você poderá interagir
     
 ## Contato
 
-Para perguntas, sugestões ou feedback, entre em contato com o mantenedor do projeto em [maintainer@example.com](mailto:maintainer@example.com).
+Para perguntas, sugestões ou feedback, entre em contato com o mantenedor do projeto em [hendriomm@gmail.com](mailto:hendriomm@gmail.com).
