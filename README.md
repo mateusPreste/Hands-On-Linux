@@ -23,7 +23,7 @@ Bem-vindo ao repositório da Equipe 06 do HandsON de Linux do DevTITANS! Este pr
 <img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao4.png" width="180" >
 
 
-- **NCícero Higor** Desenvolvedor do Firmware e Mantenedor do Projeto
+- **Cícero Higor** Desenvolvedor do Firmware e Mantenedor do Projeto
 - **Equipe 06** Desenvolvedor do Firmware
 - **Vinicius Ferreira** Desenvolvedor do Driver Linux
 - **Natalia Rufino** Desenvolvedor do Driver Linux
