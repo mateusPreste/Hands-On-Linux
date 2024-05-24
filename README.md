@@ -24,7 +24,6 @@ Bem-vindo ao repositório da Equipe 06 do HandsON de Linux do DevTITANS! Este pr
 
 
 - **Cícero Higor** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Equipe 06** Desenvolvedor do Firmware
 - **Vinicius Ferreira** Desenvolvedor do Driver Linux
 - **Natalia Rufino** Desenvolvedor do Driver Linux
 - **Enzo Henrique** Desenvolvedor do Firmware e Escritor da Documentação
