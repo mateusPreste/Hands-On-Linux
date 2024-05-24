@@ -18,13 +18,13 @@ Bem-vindo ao repositório da Equipe 04 do HandsON de Linux do DevTITANS! Este pr
 ## Contribuidores
 <img src="https://github.com/AndreXVR/Hands-On-Linux/assets/49130337/485ec817-6bb5-46b0-b182-5b4d080c0af8" width="180" >
 <img src="https://github.com/AndreXVR/Hands-On-Linux/assets/101460092/f8ba9480-f2ff-4ecd-a77b-d7cecb022df7" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
+<img src="https://github.com/AndreXVR/Hands-On-Linux/assets/57808599/8e0b2210-166e-4260-aeeb-146c2a489a85" width="180" >
+<img src="https://github.com/AndreXVR/Hands-On-Linux/assets/57808599/3b2e1947-6d51-4d12-a88a-80410e81dcc7" width="180" >
 <img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
 <img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
 
-- **Nome do(a) Aluno(a) 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Nome do(a) Aluno(a) 02:** Desenvolvedor do Firmware
+- **André da Silva Xavier:** Desenvolvedor do Firmware e Mantenedor do Projeto
+- **Laura Isabelle Neves de Queiroz:** Desenvolvedor do Firmware
 - **Bruno Ananias Negreiros:** Desenvolvedor do Driver Linux
 - **Crislan Rodrigues da Cruz:** Desenvolvedor do Driver Linux
 - **Nome do(a) Aluno(a) 05:** Desenvolvedor do Firmware e Escritor da Documentação
