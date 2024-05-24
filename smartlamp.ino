@@ -16,6 +16,8 @@ void setup() {
     
     Serial.printf("SmartLamp Initialized.\n");
     Serial.setTimeout(10);
+
+    processCommand(String("GET_LDR"));
 }
 
 // Função loop será executada infinitamente pelo ESP32
