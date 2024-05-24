@@ -17,8 +17,8 @@ Bem-vindo ao repositório da Equipe 02 do HandsON de Linux do DevTITANS! Este pr
 
 <img src="assets/matheus_carta.png" width="180" >
 <img src="assets/ricardo_carta.png" width="180" >
+<img src="assets/wadrian_carta.png" width="180" >
 <!-- <img src="assets/nome_carta.png" width="180" >
-<img src="assets/nome_carta.png" width="180" >
 <img src="assets/nome_carta.png" width="180" >
 <img src="assets/nome_carta.png" width="180" > -->
 
