@@ -19,6 +19,7 @@ Bem-vindo ao repositório da Equipe 02 do HandsON de Linux do DevTITANS! Este pr
 <img src="assets/ricardo_carta.png" width="180" >
 <img src="assets/raquel_carta.png" width="180" >
 <img src="assets/wadrian_carta.png" width="180" >
+<img src="assets/hendrio_carta.png" width="180" >
 
 
 
