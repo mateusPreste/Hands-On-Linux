@@ -154,7 +154,7 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
 
     printk(KERN_INFO "SmartLamp: Setando %s para %ld ...\n", attr_name, value);
 
-    // utilize a função usb_send_cmd para enviar os comandos GET_LED SET_LED e GET_LDR
+    // utilize a função usb_send_cmd para enviar o comando SET_LED X
 
     if (ret < 0) {
         printk(KERN_ALERT "SmartLamp: erro ao setar o valor do %s.\n", attr_name);
