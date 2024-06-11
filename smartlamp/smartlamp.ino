@@ -23,7 +23,7 @@
 
 
 int PINO_LED = 23;
-int PINO_LDR = 36;
+int PINO_LDR = 33;
 int ledValue = 10;
 int ldrMax;
 
