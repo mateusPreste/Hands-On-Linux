@@ -68,7 +68,9 @@ static void usb_disconnect(struct usb_interface *interface) {
 static int usb_read_serial() {
     int ret, actual_size;
     int retries = 10;                       // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
-    int i = 0;
+    int valor;
+    char *token = usb_in_buffer;
+    char *lastToken = NULL;
 
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
@@ -80,24 +82,22 @@ static int usb_read_serial() {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
         }
-        for (i = 0; i < actual_size; i++) {
-          if (usb_in_buffer[i] == '\n') {
-            break
+
+        while (*token != '\0') {
+          printk(KERN_INFO "Valor: %s", token);
+          if (strncmp(token, "LDR_VALUE", 9) == 0) {
+            lastToken = token + 10;
+            break;
+          } else if (lastToken != NULL) {
+            break;
           }
+          token++;
         }
-
-        char * resto = usb_read_serial[i];
-
-        // if (strstr(usb_in_buffer, "\nRES_LDR 60") != NULL) {
-        //     int ldr_value;
-        //     if (sscanf(strstr(usb_in_buffer, "\nRES_LDR ") + 1, "RES_LDR %d", &ldr_value) == 1) {
-        //         return ldr_value;
-        //     }
-        // }
+        sscanf(lastToken, "%d", &valor);
 
         //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
         //retorne o valor de X em inteiro
-        return 0;
+        return valor;
     }
 
     return -1; 
