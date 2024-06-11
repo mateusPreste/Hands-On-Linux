@@ -1,1 +1,0 @@
-cmd_/home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/serial.mod := { echo  /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/serial.o;  echo; } > /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/serial.mod
