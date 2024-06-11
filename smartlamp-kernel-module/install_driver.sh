@@ -1,8 +1,9 @@
 sudo rmmod serial
+sudo rmmod sysfs
 sudo rmmod usbserial
 
 sudo rmmod cp210x
 make
-sudo rmmod serial.ko
-sudo insmod serial.ko
-lsmod | grep serial
+sudo rmmod sysfs.ko
+sudo insmod sysfs.ko
+lsmod | grep sysfs
