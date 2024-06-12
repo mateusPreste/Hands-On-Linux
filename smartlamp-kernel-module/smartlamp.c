@@ -1,6 +1,7 @@
 #include <linux/module.h>
 #include <linux/usb.h>
 #include <linux/slab.h>
+#include <linux/delay.h>
 
 MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
 MODULE_DESCRIPTION("Driver de acesso ao SmartLamp (ESP32 com Chip Serial CP2102");
@@ -22,7 +23,8 @@ static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
 static void usb_disconnect(struct usb_interface *ifce);                           // Executado quando o dispositivo USB é desconectado da USB
-static int  usb_read_serial(void);   
+//static int  usb_read_serial(void);   
+static int usb_send_cmd(char *cmd, int param);
 
 // Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é lido (e.g., cat /sys/kernel/smartlamp/led)
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff);
@@ -68,9 +70,10 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_in_buffer = kmalloc(usb_max_size, GFP_KERNEL);
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
-    LDR_value = usb_read_serial();
-
-    printk("LDR Value: %d\n", LDR_value);
+    msleep(2000);
+//    LDR_value = usb_read_serial();
+    usb_send_cmd("GET_LDR", -1);
+//    printk("LDR Value: %d\n", LDR_value);
 
     return 0;
 }
@@ -98,10 +101,16 @@ static int usb_send_cmd(char *cmd, int param) {
     printk(KERN_INFO "SmartLamp: Enviando comando: %s\n", cmd);
 
     // preencha o buffer                     // Caso contrário, é só o comando mesmo
-
+    strcpy(usb_out_buffer,cmd);
+    if(param != -1){
+        char buffer[3];
+        strcat(usb_out_buffer, " ");
+        sprintf(buffer,"%d", param);
+        strcat(usb_out_buffer, buffer);
+    }
     // Envia o comando (usb_out_buffer) para a USB
     // Procure a documentação da função usb_bulk_msg para entender os parâmetros
-    ret = usb_bulk_msg(smartlamp_device, usb_sndbulkpipe(smartlamp_device, usb_out), BUFFER, ?, &actual_size, 1000);
+    ret = usb_bulk_msg(smartlamp_device, usb_sndbulkpipe(smartlamp_device, usb_out), usb_out_buffer, strlen(usb_out_buffer), &actual_size, 1000);
     if (ret) {
         printk(KERN_ERR "SmartLamp: Erro de codigo %d ao enviar comando!\n", ret);
         return -1;
@@ -117,7 +126,16 @@ static int usb_send_cmd(char *cmd, int param) {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
         }
-
+        else{
+            int value = 0 ;
+            int i = 0 ;
+            printk("%s", usb_in_buffer);
+            for(i = 0; i < 4; i++){
+               //printk("%d", (int)usb_in_buffer[actual_size -4 + i] -48);
+               value = (value * 10) + ((int)usb_in_buffer[actual_size -4 + i] -48);
+            }
+            return value;
+        }
         // adicione a sua implementação do médodo usb_read_serial
     }
     return -1; // Não recebi a resposta esperada do dispositivo
