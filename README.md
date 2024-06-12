@@ -21,11 +21,11 @@ Bem-vindo ao repositório da Equipe 03 do HandsON de Linux do DevTITANS! Este pr
 <img src="https://github.com/mateusPreste/Hands-On-Linux/assets/77999197/a71fd744-e6d7-4917-a262-503625a80517" width="180" >
 <img src="https://github.com/mateusPreste/Hands-On-Linux/assets/77999197/70f5fa57-9fcd-4daf-8df2-fc78d21123b1" width="180" >
 
-- **Nome do(a) Mikael Hayden 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Nome do(a) Lucas Batista02:** Desenvolvedor do Firmware
-- **Nome do(a) João Danilo 03:** Desenvolvedor do Driver Linux
-- **Nome do(a) Aris Souza 04:** Desenvolvedor do Driver Linux
-- **Nome do(a) Alison Silva 05:** Desenvolvedor do Firmware e Escritor da Documentação
+- **Mikael Hayden:** Desenvolvedor do Firmware e Mantenedor do Projeto
+- **Lucas Batista:** Desenvolvedor do Firmware
+- **João Danil:** Desenvolvedor do Driver Linux
+- **Aris Souza:** Desenvolvedor do Driver Linux
+- **Alison Silva:** Desenvolvedor do Firmware e Escritor da Documentação
 
 ## Introdução
 
