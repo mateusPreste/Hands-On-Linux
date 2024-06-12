@@ -23,6 +23,7 @@ void setup() {
     Serial.setTimeout(10);
     dht.begin();
     ledUpdate(10);
+    delay(2000);
     processCommand(String("GET_LDR"));
 }
 // Função loop será executada infinitamente pelo ESP32
