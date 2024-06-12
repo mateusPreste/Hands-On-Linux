@@ -45,9 +45,9 @@ void processCommand(String command) {
       int set_led_value = command.substring(7).toInt();  
       if ( set_led_value >= 0 && set_led_value <=100) {
         ledUpdate(set_led_value);
-        Serial.printf("RES SET_LED 1");
+        Serial.printf("RES SET_LED 1\n");
       } else {
-        Serial.printf("RES SET_LED -1");
+        Serial.printf("RES SET_LED -1\n");
       }
     } else if (command.equals(String("GET_TEMP"))) {
       Serial.print("RES GET_TEMP ");
