@@ -1,6 +1,8 @@
 // Defina os pinos de LED e LDR
 // Defina uma variável com valor máximo do LDR (4000)
 // Defina uma variável para guardar o valor atual do LED (10)
+#include <DHT.h>
+#include <DHT_U.h>
 
 
 /*
@@ -21,17 +23,21 @@
 
 */
 
+int PINO_DHT = 26;
 
 int PINO_LED = 23;
-int PINO_LDR = 36;
+int PINO_LDR = 33;
 int ledValue = 10;
 int ldrMax;
+DHT dht(PINO_DHT, DHT11);
 
 void setup() {
   pinMode(PINO_LED, OUTPUT);
   pinMode(PINO_LDR, INPUT);
+  pinMode(PINO_DHT, INPUT);
   analogWrite(PINO_LED,ledValue);
-  Serial.begin(9600);
+  Serial.begin(115200);
+  dht.begin();
   //processCommand("GET_LDR");
 }
 
@@ -70,9 +76,16 @@ void processCommand(String command) {
 
   } else if (command.indexOf("GET_LED") >= 0)
     //  retorna o valor do led atual
-      Serial.printf("RES GET_LED %d", ledGetValue());
+      Serial.printf("RES GET_LED %d\n", ledGetValue());
     else if (command.indexOf("GET_LDR") >= 0)
-      Serial.printf("RES GET_LDR %d", ldrGetValue());
+      Serial.printf("RES GET_LDR %d\n", ldrGetValue());
+   else if (command.indexOf("GET_TEMP") >= 0){
+      float temperatura = dht.readTemperature();
+      Serial.printf("RES GET_TEMP %2.f\n", temperatura);
+    }else if (command.indexOf("GET_HUM") >= 0){
+      float umidade = dht.readHumidity();
+      Serial.printf("RES GET_HUM %2.f\n", umidade);
+    }
   else
     Serial.println("ERR Unknown command.");
 
