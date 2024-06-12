@@ -1,17 +1,27 @@
 // Defina os pinos de LED e LDR
 // Defina uma variável com valor máximo do LDR (4000)
 // Defina uma variável para guardar o valor atual do LED (10)
+
+#include "DHT.h"
+
 int ledPin = 23;
 int ledValue = 10;
-
+int DHTPin = 22;
 int ldrPin = 36;
 int ldrMax = 4000;
+
+#define DHTTYPE DHT11
+DHT dht(DHTPin, DHTTYPE);
 
 void setup() {
     Serial.begin(9600);
     
     pinMode(ledPin, OUTPUT);
     pinMode(ldrPin, INPUT);
+    pinMode(DHTPin, INPUT);
+    analogWrite(ledPin, ledValue);
+
+    dht.begin();
     
     Serial.printf("SmartLamp Initialized.\n");
 }
@@ -46,6 +56,10 @@ void processCommand(String command) {
         Serial.printf("RES GET_LED %d\n", ledValue);
     } else if (command.startsWith("GET_LDR")) {
         Serial.printf("RES GET_LDR %d\n", ldrGetValue());
+    } else if (command.startsWith("GET_TEMP")) {
+        tempGetValue();
+    } else if (command.startsWith("GET_HUM")) {
+        humGetValue();
     }
 }
 
@@ -70,12 +84,10 @@ int ldrGetValue() {
     return value*255/ldrMax;
 }
 
-// Função para ler o valor do LED
-int ledGetValue() {
-    int ldrAnalog = analogRead(ldrPin);
-    int ldrValue = 100*ldrAnalog/ldrMax;
+void tempGetValue() {
+  Serial.printf("RES GET_TEMP %.2f\n", dht.readTemperature());
+}
 
-    // Serial.printf("DBG LDR_MAX=%d, LDR_ANALOG=%d, LDR_VALUE=%d\n", ldrMax, ldrAnalog, ldrValue);
-
-    return ldrValue > 100 ? 100 : ldrValue;
+void humGetValue() {
+  Serial.printf("RES GET_HUM %.2f\n", dht.readHumidity());
 }
