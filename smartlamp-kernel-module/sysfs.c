@@ -15,8 +15,8 @@ static uint usb_in, usb_out;                       // Endereços das portas de e
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-#define VENDOR_ID   SUBSTITUA_PELO_VENDORID /* Encontre o VendorID  do smartlamp */
-#define PRODUCT_ID  SUBSTITUA_PELO_PRODUCTID /* Encontre o ProductID do smartlamp */
+#define VENDOR_ID   0x10C4 /* Encontre o VendorID  do smartlamp */
+#define PRODUCT_ID  0xEA60 /* Encontre o ProductID do smartlamp */
 static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
@@ -80,6 +80,7 @@ static void usb_disconnect(struct usb_interface *interface) {
     printk(KERN_INFO "SmartLamp: Dispositivo desconectado.\n");
     kfree(usb_in_buffer);                   // Desaloca buffers
     kfree(usb_out_buffer);
+    kobject_put(sys_obj);
 }
 
 static int usb_read_serial() {
@@ -116,6 +117,13 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
     printk(KERN_INFO "SmartLamp: Lendo %s ...\n", attr_name);
 
     // Implemente a leitura do valor do led usando a função usb_read_serial()
+
+    if(strcmp("led", attr_name) == 0){
+        pr_info("SmartLamp: João Danilo\n");
+    }
+    else if(strcmp("ldr", attr_name) == 0){
+        pr_info("SmartLamp: DevTITANS\n");
+    }
         
 
     sprintf(buff, "%d\n", value);                   // Cria a mensagem com o valor do led, ldr
@@ -137,6 +145,14 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
     }
 
     printk(KERN_INFO "SmartLamp: Setando %s para %ld ...\n", attr_name, value);
+
+    if(strcmp("led", attr_name) == 0){
+        pr_info("SmartLamp: O valor passado foi %ld\n", value);
+    }
+    else if(strcmp("ldr", attr_name) == 0){
+        pr_err("SmartLamp: Erro ao enviar comando ao LDR\n");
+        ret = -1;
+    }
 
     if (ret < 0) {
         printk(KERN_ALERT "SmartLamp: erro ao setar o valor do %s.\n", attr_name);
