@@ -1,6 +1,7 @@
 #include <linux/module.h>
 #include <linux/usb.h>
 #include <linux/slab.h>
+#include <linux/delay.h>
 
 MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
 MODULE_DESCRIPTION("Driver de acesso ao SmartLamp (ESP32 com Chip Serial CP2102");
@@ -23,6 +24,7 @@ static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
 static void usb_disconnect(struct usb_interface *ifce);                           // Executado quando o dispositivo USB é desconectado da USB
 //static int  usb_read_serial(void);   
+static int usb_send_cmd(char *cmd, int param);
 
 // Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é lido (e.g., cat /sys/kernel/smartlamp/led)
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff);
@@ -68,8 +70,9 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_in_buffer = kmalloc(usb_max_size, GFP_KERNEL);
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
+    msleep(2000);
 //    LDR_value = usb_read_serial();
-
+    usb_send_cmd("GET_LDR", -1);
 //    printk("LDR Value: %d\n", LDR_value);
 
     return 0;
@@ -78,6 +81,8 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
 // Executado quando o dispositivo USB é desconectado da USB
 static void usb_disconnect(struct usb_interface *interface) {
     printk(KERN_INFO "SmartLamp: Dispositivo desconectado.\n");
+    if (sys_obj) kobject_put(sys_obj);      // Remove os arquivos em /sys/kernel/smartlamp
+    kobject_del(sys_obj);
     kfree(usb_in_buffer);                   // Desaloca buffers
     kfree(usb_out_buffer);
 }
