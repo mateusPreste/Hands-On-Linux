@@ -9,7 +9,7 @@ DHT dht(DHT_PIN, DHTTYPE);
 int ledPin = 19;
 int ledValue;
 
-int ldrPin = 18;
+int ldrPin = 4;
 // Faça testes no sensor ldr para encontrar o valor maximo e atribua a variável ldrMax
 int ldrMax = 4000;
 
@@ -22,7 +22,7 @@ void setup() {
     Serial.printf("SmartLamp Initialized.\n");
     Serial.setTimeout(10);
     dht.begin();
-
+    ledUpdate(10);
     processCommand(String("GET_LDR"));
 }
 // Função loop será executada infinitamente pelo ESP32
