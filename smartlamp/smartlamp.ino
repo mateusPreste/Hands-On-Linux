@@ -76,15 +76,15 @@ void processCommand(String command) {
 
   } else if (command.indexOf("GET_LED") >= 0)
     //  retorna o valor do led atual
-      Serial.printf("RES GET_LED %d", ledGetValue());
+      Serial.printf("RES GET_LED %d\n", ledGetValue());
     else if (command.indexOf("GET_LDR") >= 0)
-      Serial.printf("RES GET_LDR %d", ldrGetValue());
+      Serial.printf("RES GET_LDR %d\n", ldrGetValue());
    else if (command.indexOf("GET_TEMP") >= 0){
       float temperatura = dht.readTemperature();
-      Serial.println(temperatura);
+      Serial.printf("RES GET_TEMP %2.f\n", temperatura);
     }else if (command.indexOf("GET_HUM") >= 0){
-      float humidade = dht.readHumidity();
-      Serial.println(humidade);
+      float umidade = dht.readHumidity();
+      Serial.printf("RES GET_HUM %2.f\n", umidade);
     }
   else
     Serial.println("ERR Unknown command.");
