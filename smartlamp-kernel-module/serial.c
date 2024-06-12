@@ -68,9 +68,10 @@ static void usb_disconnect(struct usb_interface *interface) {
 static int usb_read_serial() {
     int ret, actual_size;
     int retries = 10;                       // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
-    int valor;
-    char *token = usb_in_buffer;
-    char *lastToken = NULL;
+    // int valor;
+    // char *token = usb_in_buffer;
+    // char *lastToken = NULL;
+  // int i = 0;
 
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
@@ -83,21 +84,31 @@ static int usb_read_serial() {
             continue;
         }
 
-        while (*token != '\0') {
-          printk(KERN_INFO "Valor: %s", token);
-          if (strncmp(token, "LDR_VALUE", 9) == 0) {
-            lastToken = token + 10;
-            break;
-          } else if (lastToken != NULL) {
-            break;
-          }
-          token++;
-        }
-        sscanf(lastToken, "%d", &valor);
+        // for(i = 0; i < actual_size; i++) {
+        //     if (usb_in_buffer[i] == '\n') {
+        //       break;
+        //     }  
+        // }
+        //
+        // for(i = i+12; i < actual_size; i++) {
+        //   printk(KERN_INFO "%c", usb_in_buffer[i]);
+        // }
 
-        //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
-        //retorne o valor de X em inteiro
-        return valor;
+        // while (*token != '\0') {
+        //   printk(KERN_INFO "Valor: %s", token);
+        //   if (strncmp(token, "LDR_VALUE", 9) == 0) {
+        //     lastToken = token + 10;
+        //     break;
+        //   } else if (lastToken != NULL) {
+        //     break;
+        //   }
+        //   token++;
+        // }
+        // sscanf(lastToken, "%d", &valor);
+        //
+        // //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
+        // //retorne o valor de X em inteiro
+        // return valor;
     }
 
     return -1; 
