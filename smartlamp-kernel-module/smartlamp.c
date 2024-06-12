@@ -207,9 +207,9 @@ static int usb_send_cmd(char *cmd, int param) {
                 // Extrai o valor após o prefixo
                 resp_number = simple_strtol(cmd_value[1], NULL, 10);
                 printk(KERN_INFO "SmartLamp: Valor recebido: %ld\n", resp_number);
-                break;
             }
             kfree(cmd_value);
+            break;
         }
         
     }
