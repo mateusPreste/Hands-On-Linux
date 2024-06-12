@@ -1,8 +1,6 @@
+# DevTITANS 05 - HandsOn Linux - Equipe 03
 
-
-# DevTITANS 05 - HandsOn Linux - Equipe 0X
-
-Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este projeto contém um firmware para o ESP32 escrito em formato Arduino `.ino`, bem como um driver do kernel Linux escrito em C. O objetivo é demonstrar como criar uma solução completa de hardware e software que integra um dispositivo ESP32 com um sistema Linux.
+Bem-vindo ao repositório da Equipe 03 do HandsON de Linux do DevTITANS! Este projeto contém um firmware para o ESP32 escrito em formato Arduino `.ino`, bem como um driver do kernel Linux escrito em C. O objetivo é demonstrar como criar uma solução completa de hardware e software que integra um dispositivo ESP32 com um sistema Linux.
 
 ## Tabela de Conteúdos
 
@@ -18,13 +16,13 @@ Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este pr
 ## Contribuidores
 
 <img src="https://github.com/mateusPreste/Hands-On-Linux/assets/77999197/ad883132-2f85-41ee-a016-e65eb7aeb57f" width="180" >
-<img src="https://github.com/mateusPreste/Hands-On-Linux/assets/77999197/70f5fa57-9fcd-4daf-8df2-fc78d21123b1" width="180" >
 <img src="https://github.com/mateusPreste/Hands-On-Linux/assets/77999197/2fc0abd5-7b83-4b14-b61b-9dd244597cdc" width="180" >
 <img src="https://github.com/mateusPreste/Hands-On-Linux/assets/77999197/f49e107b-dce0-4774-858c-5953453f124b" width="180" >
 <img src="https://github.com/mateusPreste/Hands-On-Linux/assets/77999197/a71fd744-e6d7-4917-a262-503625a80517" width="180" >
+<img src="https://github.com/mateusPreste/Hands-On-Linux/assets/77999197/70f5fa57-9fcd-4daf-8df2-fc78d21123b1" width="180" >
 
 - **Nome do(a) Mikael Hayden 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Nome do(a) Lucas 02:** Desenvolvedor do Firmware
+- **Nome do(a) Lucas Batista02:** Desenvolvedor do Firmware
 - **Nome do(a) João Danilo 03:** Desenvolvedor do Driver Linux
 - **Nome do(a) Aris Souza 04:** Desenvolvedor do Driver Linux
 - **Nome do(a) Alison Silva 05:** Desenvolvedor do Firmware e Escritor da Documentação
