@@ -1,0 +1,9 @@
+#include "DHT.h"
+#define DHT_PIN 25
+#define DHTTYPE DHT22
+DHT dht(DHT_PIN, DHTTYPE);
+
+int ledPin = 26;
+int ledValue;
+
+int ldrPin = 34;
