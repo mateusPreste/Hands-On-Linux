@@ -25,7 +25,7 @@ Bem-vindo ao repositório da Equipe 06 do HandsON de Linux do DevTITANS! Este pr
 
 
 - **Cícero Higor** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Equipe 06** Desenvolvedor do Firmware
+- **Thaiane Siqueira** Desenvolvedor do Firmware
 - **Vinicius Ferreira** Desenvolvedor do Driver Linux
 - **Natalia Rufino** Desenvolvedor do Driver Linux
 - **Enzo Henrique** Desenvolvedor do Firmware e Escritor da Documentação
@@ -44,7 +44,7 @@ Este projeto serve como um exemplo para desenvolvedores interessados em construi
   
 - **Driver do Kernel Linux:**
   - Rotinas de inicialização e limpeza.
-  - Operações de arquivo de dispositivo (`GET_LED`, `SET_LED`, `GET_LDR`).
+  - Operações de arquivo de dispositivo (`GET_LED`, `SET_LED`, `GET_LDR`,`GET_TEMP`,`GET_HUM`).
   - Comunicação com o ESP32 via Serial.
 
 ## Requisitos
@@ -54,6 +54,8 @@ Este projeto serve como um exemplo para desenvolvedores interessados em construi
   - Máquina Linux
   - Protoboard e Cabos Jumper
   - Sensor LDR
+  - LED
+  - Sensor DHT11
   
 - **Software:**
   - Arduino IDE
