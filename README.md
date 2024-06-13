@@ -17,12 +17,12 @@ Bem-vindo ao repositório da Equipe 06 do HandsON de Linux do DevTITANS! Este pr
 
 ## Contribuidores
 
-
-<img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/082420cf-a957-4c9a-9bb3-75050b1b55b1" width="180" >
+<div>
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao01.png" width="180" >
 <img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/1d57e0ec-2698-4768-9c1c-a9eea55f290f" width="180" >
 <img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/22dedfae-d9df-4a02-a433-27afe46e92e9" width="180" >
 <img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/ac13dca2-f35f-48ec-9ea6-0899fe5bf120" width="180" >
-
+</div>
 
 - **Cícero Higor** Desenvolvedor do Firmware e Mantenedor do Projeto
 - **Enzo Henrique** Desenvolvedor do Firmware e Escritor da Documentação
