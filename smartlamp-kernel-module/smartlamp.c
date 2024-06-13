@@ -1,13 +1,14 @@
 #include <linux/module.h>
 #include <linux/usb.h>
 #include <linux/slab.h>
+#include <linux/leds.h>
 
 MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
 MODULE_DESCRIPTION("Driver de acesso ao SmartLamp (ESP32 com Chip Serial CP2102");
 MODULE_LICENSE("GPL");
 
 
-#define MAX_RECV_LINE 100 // Tamanho máximo de uma linha de resposta do dispositvo USB
+#define MAX_RECV_LINE 996 // Tamanho máximo de uma linha de resposta do dispositvo USB
 
 
 static char recv_line[MAX_RECV_LINE];              // Armazena dados vindos da USB até receber um caractere de nova linha '\n'
@@ -15,6 +16,7 @@ static struct usb_device *smartlamp_device;        // Referência para o disposi
 static uint usb_in, usb_out;                       // Endereços das portas de entrada e saida da USB
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
+struct led_classdev *smartlamp_led;
 
 #define VENDOR_ID   0x10C4 /* Encontre o VendorID  do smartlamp */
 #define PRODUCT_ID  0xea60 /* Encontre o ProductID do smartlamp */
@@ -23,6 +25,7 @@ static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
 static void usb_disconnect(struct usb_interface *ifce);                           // Executado quando o dispositivo USB é desconectado da USB
 static int  usb_read_serial(void);   
+static int usb_send_cmd(char *cmd, int param);
 
 // Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é lido (e.g., cat /sys/kernel/smartlamp/led)
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff);
@@ -49,11 +52,34 @@ static struct usb_driver smartlamp_driver = {
 
 module_usb_driver(smartlamp_driver);
 
+static int led_brightness_set(struct led_classdev *led_cdev, enum led_brightness value)
+{
+    int ret;
+
+    // pr_info("SmartLamp: Setting Value: %d\n", value);
+
+    if(value == LED_OFF){
+        ret = usb_send_cmd("SET_LED", 0);
+    }
+    else if(value == LED_ON){
+        ret = usb_send_cmd("SET_LED", 100);
+    }
+    else if(value == LED_HALF){
+        ret = usb_send_cmd("SET_LED", 50);
+    }
+    else if(value == LED_FULL){
+        ret = usb_send_cmd("SET_LED", 100);
+    }
+
+    return 0;
+}
+
 // Executado quando o dispositivo é conectado na USB
 static int usb_probe(struct usb_interface *interface, const struct usb_device_id *id) {
     struct usb_endpoint_descriptor *usb_endpoint_in, *usb_endpoint_out;
 
     printk(KERN_INFO "SmartLamp: Dispositivo conectado ...\n");
+    int err;
 
     // Cria arquivos do /sys/kernel/smartlamp/*
     sys_obj = kobject_create_and_add("smartlamp", kernel_kobj);
@@ -68,6 +94,22 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_in_buffer = kmalloc(usb_max_size, GFP_KERNEL);
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
+    smartlamp_led = devm_kzalloc(&interface->dev, sizeof(*smartlamp_led), GFP_KERNEL);
+
+    if (!smartlamp_led)
+		return -ENOMEM;
+        
+    smartlamp_led->name = "smartlamp:led";
+	smartlamp_led->brightness_set_blocking = led_brightness_set;
+	smartlamp_led->flags = LED_CORE_SUSPENDRESUME;
+	smartlamp_led->max_brightness = 255;
+
+    err = devm_led_classdev_register(&interface->dev, smartlamp_led);
+	if (err) {
+		dev_err(&interface->dev, "failed to register white LED\n");
+		return err;
+	}
+
     LDR_value = usb_read_serial();
 
     printk("LDR Value: %d\n", LDR_value);
@@ -78,9 +120,12 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
 // Executado quando o dispositivo USB é desconectado da USB
 static void usb_disconnect(struct usb_interface *interface) {
     printk(KERN_INFO "SmartLamp: Dispositivo desconectado.\n");
+    devm_led_classdev_unregister(&interface->dev, smartlamp_led);
+    kfree(smartlamp_led);
     kfree(usb_in_buffer);                   // Desaloca buffers
     kfree(usb_out_buffer);
     kobject_put(sys_obj);
+   
 }
 
 static char **extract_cmd_value(char *command) {
