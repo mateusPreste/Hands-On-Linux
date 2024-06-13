@@ -15,7 +15,7 @@ static uint usb_in, usb_out;                       // Endereços das portas de e
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-#define VENDOR_ID   0x10c4 /* Encontre o VendorID  do smartlamp */
+#define VENDOR_ID   0x10c4  /* Encontre o VendorID  do smartlamp */
 #define PRODUCT_ID  0xea60 /* Encontre o ProductID do smartlamp */
 static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
@@ -79,6 +79,7 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
 static void usb_disconnect(struct usb_interface *interface) {
     printk(KERN_INFO "SmartLamp: Dispositivo desconectado.\n");
     if (sys_obj) kobject_put(sys_obj);      // Remove os arquivos em /sys/kernel/smartlamp
+
     kfree(usb_in_buffer);                   // Desaloca buffers
     kfree(usb_out_buffer);
 }
@@ -119,7 +120,9 @@ static int usb_read_serial() {
 // Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é lido (e.g., cat /sys/kernel/smartlamp/led)
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff) {
     // value representa o valor do led ou ldr
-    int value, ret, actual_size;
+
+    long value;
+    int  ret, actual_size;
     // attr_name representa o nome do arquivo que está sendo lido (ldr ou led)
     const char *attr_name = attr->attr.name;
 
@@ -127,6 +130,17 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
     printk(KERN_INFO "SmartLamp: Lendo %s ...\n", attr_name);
 
     // Implemente a leitura do valor do led usando a função usb_read_serial()
+      if (strcmp(attr_name, "led") == 0) {
+    // Exibe seu nome quando o arquivo led é lido
+        printk(KERN_INFO "SmartLamp: Natalia");
+    } else if (strcmp(attr_name, "ldr") == 0) {
+        // Exibe "DevTITANS" quando o arquivo ldr é lido
+        printk(KERN_INFO "SmartLamp: DevTITANS\n");
+    } else {
+        // Se outro arquivo for lido, exibe uma mensagem de erro
+        printk(KERN_ERR "SmartLamp: Arquivo desconhecido: %s\n", attr_name);
+        return -EACCES;
+    }
     if(attr_name == "ldr"){
         strcpy(usb_out_buffer,"GET_LDR");
     } else{
@@ -139,7 +153,7 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
     }
     value = usb_read_serial();
 
-    sprintf(buff, "%d\n", value);                   // Cria a mensagem com o valor do led, ldr
+    //sprintf(buff, "%d\n", value);                   // Cria a mensagem com o valor do led, ldr
     return strlen(buff);
 }
 
