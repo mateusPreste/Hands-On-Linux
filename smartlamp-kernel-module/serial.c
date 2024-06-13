@@ -1,6 +1,8 @@
 #include <linux/module.h>
 #include <linux/usb.h>
 #include <linux/slab.h>
+#include <linux/string.h>
+#include <linux/ctype.h>
 
 MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
 MODULE_DESCRIPTION("Driver de acesso ao SmartLamp (ESP32 com Chip Serial CP2102");
@@ -71,7 +73,9 @@ static int usb_read_serial() {
     // int valor;
     // char *token = usb_in_buffer;
     // char *lastToken = NULL;
-  // int i = 0;
+    int i = 0;
+    int numero = -2;
+    char meu_bufferbuffer[MAX_RECV_LINE];
 
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
@@ -84,13 +88,13 @@ static int usb_read_serial() {
             continue;
         }
 
+    //kstrtol
+        for(i = 0; i < actual_size; i++) {
+          printk(KERN_INFO "%c", usb_in_buffer[i]);
+          meu_bufferbuffer[i] = usb_in_buffer[i];
+        }
+
         // for(i = 0; i < actual_size; i++) {
-        //     if (usb_in_buffer[i] == '\n') {
-        //       break;
-        //     }  
-        // }
-        //
-        // for(i = i+12; i < actual_size; i++) {
         //   printk(KERN_INFO "%c", usb_in_buffer[i]);
         // }
 
@@ -109,7 +113,39 @@ static int usb_read_serial() {
         // //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
         // //retorne o valor de X em inteiro
         // return valor;
+        // return 11;
     }
 
-    return -1; 
+
+    // const char *buffer = "lixo lixo lixo\nRES GET_LDR 1234\n";
+    char *result = strstr(meu_bufferbuffer, "RES GET_LDR"); // Procura a substring "RES GET_LDR"
+    if (result != NULL) {
+        const char *ptr = result + strlen("RES GET_LDR");
+        while (*ptr && !isdigit(*ptr)) {
+            ptr++;
+        }
+        if (*ptr) {
+            sscanf(ptr, "%d", &numero);
+            printk(KERN_INFO "O número inteiro encontrado é: %d\n", numero);
+        } else {
+            printk(KERN_INFO "Número inteiro não encontrado na substring.\n");
+        }
+    } else {
+        printk(KERN_INFO "A substring 'RES GET_LDR' não foi encontrada.\n");
+    }
+
+    // const char *kernel_version = "Linux version 5.10.0-8-generic";
+    // const char *substring = "5.10";
+    // char buffer[20]; // Tamanho do buffer para armazenar a substring
+    // char *result = memmem(kernel_version, strlen(kernel_version), substring, strlen(substring));
+    // if (result != NULL) {
+    //     strncpy(buffer, result, strlen(substring));
+    //     buffer[strlen(substring)] = '\0'; // Adiciona o caractere nulo ao final da substring
+    //     printk(KERN_INFO "A substring '%s' foi encontrada.\n", buffer);
+    // } else {
+    //     printk(KERN_INFO "A substring '%s' não foi encontrada.\n", substring);
+    // }
+    return numero;
+
+    // return -1; 
 }
