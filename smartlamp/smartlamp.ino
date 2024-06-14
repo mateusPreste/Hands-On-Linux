@@ -36,7 +36,7 @@ void setup() {
   pinMode(PINO_LDR, INPUT);
   pinMode(PINO_DHT, INPUT);
   analogWrite(PINO_LED,ledValue);
-  Serial.begin(115200);
+  Serial.begin(9600);
   dht.begin();
   //processCommand("GET_LDR");
 }
