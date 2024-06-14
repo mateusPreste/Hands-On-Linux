@@ -17,18 +17,19 @@ Bem-vindo ao repositório da Equipe 06 do HandsON de Linux do DevTITANS! Este pr
 
 ## Contribuidores
 
-
-<img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/082420cf-a957-4c9a-9bb3-75050b1b55b1" width="180" >
-<img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/1d57e0ec-2698-4768-9c1c-a9eea55f290f" width="180" >
-<img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/22dedfae-d9df-4a02-a433-27afe46e92e9" width="180" >
+<div>
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao01.png" width="180" >
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao2.jpg" width="180" >
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao3.jpg" width="180" >
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao5.JPG" width="180" >
 <img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/ac13dca2-f35f-48ec-9ea6-0899fe5bf120" width="180" >
-
+</div>
 
 - **Cícero Higor** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Equipe 06** Desenvolvedor do Firmware
-- **Vinicius Ferreira** Desenvolvedor do Driver Linux
-- **Natalia Rufino** Desenvolvedor do Driver Linux
 - **Enzo Henrique** Desenvolvedor do Firmware e Escritor da Documentação
+- **Natalia Rufino** Desenvolvedor do Driver Linux
+- **Thaiane Siqueira** Desenvolvedor do Firmware
+- **Vinicius Ferreira** Desenvolvedor do Driver Linux
 
 ## Introdução
 
@@ -44,7 +45,7 @@ Este projeto serve como um exemplo para desenvolvedores interessados em construi
   
 - **Driver do Kernel Linux:**
   - Rotinas de inicialização e limpeza.
-  - Operações de arquivo de dispositivo (`GET_LED`, `SET_LED`, `GET_LDR`).
+  - Operações de arquivo de dispositivo (`GET_LED`, `SET_LED`, `GET_LDR`,`GET_TEMP`,`GET_HUM`).
   - Comunicação com o ESP32 via Serial.
 
 ## Requisitos
@@ -54,6 +55,8 @@ Este projeto serve como um exemplo para desenvolvedores interessados em construi
   - Máquina Linux
   - Protoboard e Cabos Jumper
   - Sensor LDR
+  - LED
+  - Sensor DHT11
   
 - **Software:**
   - Arduino IDE
