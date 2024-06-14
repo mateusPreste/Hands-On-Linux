@@ -19,7 +19,7 @@ Bem-vindo ao repositório da Equipe 06 do HandsON de Linux do DevTITANS! Este pr
 
 <div>
 <img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao01.png" width="180" >
-<img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/1d57e0ec-2698-4768-9c1c-a9eea55f290f" width="180" >
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao2.jpg" width="180" >
 <img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao3.jpg" width="180" >
 <img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao5.JPG" width="180" >
 <img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/ac13dca2-f35f-48ec-9ea6-0899fe5bf120" width="180" >
