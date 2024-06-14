@@ -52,3 +52,4 @@ int ldrGetValue() {
     int digitalValue = analogRead(ldrPin);
     return map(digitalValue, 0, ldrMax,0 , 100);
 }
+
