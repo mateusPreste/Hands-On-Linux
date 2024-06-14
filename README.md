@@ -24,10 +24,10 @@ Bem-vindo ao repositório da Equipe 04 do HandsON de Linux do DevTITANS! Este pr
 <img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
 
 - **André da Silva Xavier:** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Laura Isabelle Neves de Queiroz:** Desenvolvedor do Firmware
+- **Laura Isabelle Neves de Queiroz:** Desenvolvedor do Firmware e Escritor da Documentação
 - **Bruno Ananias Negreiros:** Desenvolvedor do Driver Linux
 - **Crislan Rodrigues da Cruz:** Desenvolvedor do Driver Linux
-- **Nome do(a) Aluno(a) 05:** Desenvolvedor do Firmware e Escritor da Documentação
+- **Nome do(a) Aluno(a) 05:** Desenvolvedor do Firmware 
 
 ## Introdução
 
