@@ -1,4 +1,4 @@
-obj-m += sysfs.o
+obj-m += probe.o serial.o serial_write.o smartlamp.o #sysfs.o
 PWD := $(CURDIR)
 
 all:
