@@ -27,7 +27,7 @@ Bem-vindo ao repositório da Equipe 04 do HandsON de Linux do DevTITANS! Este pr
 - **Laura Isabelle Neves de Queiroz:** Desenvolvedor do Firmware e Escritor da Documentação
 - **Bruno Ananias Negreiros:** Desenvolvedor do Driver Linux
 - **Crislan Rodrigues da Cruz:** Desenvolvedor do Driver Linux
-- **Nome do(a) Aluno(a) 05:** Desenvolvedor do Firmware 
+- **Matheus M.Maignardi:** Desenvolvedor do Firmware 
 
 ## Introdução
 
