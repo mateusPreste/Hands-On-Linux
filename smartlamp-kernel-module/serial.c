@@ -75,6 +75,7 @@ static int usb_read_serial() {
     // char *lastToken = NULL;
     int i = 0;
     int numero = -2;
+    int i_2 = 0;
     char meu_bufferbuffer[MAX_RECV_LINE];
 
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
@@ -84,68 +85,33 @@ static int usb_read_serial() {
             // actual_size - contem o tamanho da resposta em bytes
         ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
         if (ret) {
-            printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
-            continue;
+            if(actual_size < 1) {
+              char *result = strstr(meu_bufferbuffer, "RES GET_LDR"); // Procura a substring "RES GET_LDR"
+              if (result != NULL) {
+                const char *ptr = result + strlen("RES GET_LDR");
+                while (*ptr && !isdigit(*ptr)) {
+                  ptr++;
+                }
+                if (*ptr) {
+                  sscanf(ptr, "%d", &numero);
+                  // printk(KERN_INFO "O número inteiro encontrado é: %d\n", numero);
+                  return numero;
+                } else {
+                  printk(KERN_INFO "Número inteiro não encontrado na substring.\n");
+                }
+              } else {
+                // printk(KERN_INFO "A substring 'RES GET_LDR' não foi encontrada.\n");
+                // return -1;
+                printk(KERN_ERR "smartlamp: erro ao ler dados da usb (tentativa %d). codigo: %d\n", ret, retries--);
+                continue;
+              }
+            }
         }
-
-    //kstrtol
         for(i = 0; i < actual_size; i++) {
           printk(KERN_INFO "%c", usb_in_buffer[i]);
-          meu_bufferbuffer[i] = usb_in_buffer[i];
+          meu_bufferbuffer[i_2] = usb_in_buffer[i];
+          i_2++;
         }
-
-        // for(i = 0; i < actual_size; i++) {
-        //   printk(KERN_INFO "%c", usb_in_buffer[i]);
-        // }
-
-        // while (*token != '\0') {
-        //   printk(KERN_INFO "Valor: %s", token);
-        //   if (strncmp(token, "LDR_VALUE", 9) == 0) {
-        //     lastToken = token + 10;
-        //     break;
-        //   } else if (lastToken != NULL) {
-        //     break;
-        //   }
-        //   token++;
-        // }
-        // sscanf(lastToken, "%d", &valor);
-        //
-        // //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
-        // //retorne o valor de X em inteiro
-        // return valor;
-        // return 11;
     }
-
-
-    // const char *buffer = "lixo lixo lixo\nRES GET_LDR 1234\n";
-    char *result = strstr(meu_bufferbuffer, "RES GET_LDR"); // Procura a substring "RES GET_LDR"
-    if (result != NULL) {
-        const char *ptr = result + strlen("RES GET_LDR");
-        while (*ptr && !isdigit(*ptr)) {
-            ptr++;
-        }
-        if (*ptr) {
-            sscanf(ptr, "%d", &numero);
-            printk(KERN_INFO "O número inteiro encontrado é: %d\n", numero);
-        } else {
-            printk(KERN_INFO "Número inteiro não encontrado na substring.\n");
-        }
-    } else {
-        printk(KERN_INFO "A substring 'RES GET_LDR' não foi encontrada.\n");
-    }
-
-    // const char *kernel_version = "Linux version 5.10.0-8-generic";
-    // const char *substring = "5.10";
-    // char buffer[20]; // Tamanho do buffer para armazenar a substring
-    // char *result = memmem(kernel_version, strlen(kernel_version), substring, strlen(substring));
-    // if (result != NULL) {
-    //     strncpy(buffer, result, strlen(substring));
-    //     buffer[strlen(substring)] = '\0'; // Adiciona o caractere nulo ao final da substring
-    //     printk(KERN_INFO "A substring '%s' foi encontrada.\n", buffer);
-    // } else {
-    //     printk(KERN_INFO "A substring '%s' não foi encontrada.\n", substring);
-    // }
-    return numero;
-
-    // return -1; 
+    return -1;
 }
