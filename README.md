@@ -51,8 +51,10 @@ Este projeto serve como um exemplo para desenvolvedores interessados em construi
 - **Hardware:**
   - Placa de Desenvolvimento ESP32
   - Máquina Linux
-  - Protoboard e Cabos Jumper
+  - Protoboard, Cabos Jumper e resistores
   - Sensor LDR
+  - LED
+  - DHT
   
 - **Software:**
   - Arduino IDE
@@ -94,7 +96,7 @@ Este projeto serve como um exemplo para desenvolvedores interessados em construi
 
 1. **Clone o Repositório:**
     ```sh
-    git clone https://github.com/seuusuario/Hands-On-Linux.git
+    git clone https://github.com/AndreXVR/Hands-On-Linux.git
     cd Hands-On-Linux
     ```
 
@@ -140,4 +142,4 @@ Depois que o driver e o firmware estiverem configurados, você poderá interagir
     
 ## Contato
 
-Para perguntas, sugestões ou feedback, entre em contato com o mantenedor do projeto em [maintainer@example.com](mailto:maintainer@example.com).
+Para perguntas, sugestões ou feedback, entre em contato com o mantenedor do projeto em [email adress](mailto:xavier.andre256@gmail.com).
