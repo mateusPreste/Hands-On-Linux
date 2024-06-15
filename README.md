@@ -1,8 +1,8 @@
 
 
-# DevTITANS 05 - HandsOn Linux - Equipe 0X
+# DevTITANS 05 - HandsOn Linux - Equipe 06
 
-Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este projeto contém um firmware para o ESP32 escrito em formato Arduino `.ino`, bem como um driver do kernel Linux escrito em C. O objetivo é demonstrar como criar uma solução completa de hardware e software que integra um dispositivo ESP32 com um sistema Linux.
+Bem-vindo ao repositório da Equipe 06 do HandsON de Linux do DevTITANS! Este projeto contém um firmware para o ESP32 escrito em formato Arduino `.ino`, bem como um driver do kernel Linux escrito em C. O objetivo é demonstrar como criar uma solução completa de hardware e software que integra um dispositivo ESP32 com um sistema Linux.
 
 ## Tabela de Conteúdos
 
@@ -17,18 +17,19 @@ Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este pr
 
 ## Contribuidores
 
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
+<div>
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao01.png" width="180" >
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao2.jpg" width="180" >
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao3.jpg" width="180" >
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/blob/main/assets/cartao5.JPG" width="180" >
+<img src="https://github.com/ChigorGomes/Hands-On-Linux/assets/21023906/ac13dca2-f35f-48ec-9ea6-0899fe5bf120" width="180" >
+</div>
 
-- **Nome do(a) Aluno(a) 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Nome do(a) Aluno(a) 02:** Desenvolvedor do Firmware
-- **Nome do(a) Aluno(a) 03:** Desenvolvedor do Driver Linux
-- **Nome do(a) Aluno(a) 04:** Desenvolvedor do Driver Linux
-- **Nome do(a) Aluno(a) 05:** Desenvolvedor do Firmware e Escritor da Documentação
+- **Cícero Higor** Desenvolvedor do Firmware e Mantenedor do Projeto
+- **Enzo Henrique** Desenvolvedor do Firmware e Escritor da Documentação
+- **Natalia Rufino** Desenvolvedor do Driver Linux
+- **Thaiane Siqueira** Desenvolvedor do Firmware
+- **Vinicius Ferreira** Desenvolvedor do Driver Linux
 
 ## Introdução
 
@@ -44,7 +45,7 @@ Este projeto serve como um exemplo para desenvolvedores interessados em construi
   
 - **Driver do Kernel Linux:**
   - Rotinas de inicialização e limpeza.
-  - Operações de arquivo de dispositivo (`GET_LED`, `SET_LED`, `GET_LDR`).
+  - Operações de arquivo de dispositivo (`GET_LED`, `SET_LED`, `GET_LDR`,`GET_TEMP`,`GET_HUM`).
   - Comunicação com o ESP32 via Serial.
 
 ## Requisitos
@@ -54,6 +55,8 @@ Este projeto serve como um exemplo para desenvolvedores interessados em construi
   - Máquina Linux
   - Protoboard e Cabos Jumper
   - Sensor LDR
+  - LED
+  - Sensor DHT11
   
 - **Software:**
   - Arduino IDE
@@ -141,4 +144,4 @@ Depois que o driver e o firmware estiverem configurados, você poderá interagir
     
 ## Contato
 
-Para perguntas, sugestões ou feedback, entre em contato com o mantenedor do projeto em [maintainer@example.com](mailto:maintainer@example.com).
+Para perguntas, sugestões ou feedback, entre em contato com o mantenedor do projeto em [higorgomesousa@gmail.com](higorgomesousa@gmail.com).
