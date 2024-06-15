@@ -170,10 +170,14 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
         printk(KERN_ALERT "SmartLamp: valor de %s invalido.\n", attr_name);
         return -EACCES;
     }
-
-    printk(KERN_INFO "SmartLamp: Setando %s para %ld ...\n", attr_name, value);
-
-    // utilize a função usb_send_cmd para enviar o comando SET_LED X
+    // utilize a função usb_send_cmd para enviar o comando SET_LED 
+    if (strcmp(attr_name, "ldr") == 0) {
+        printk(KERN_ALERT "SmartLamp: escrita no arquivo LDR não permitida.\n");
+        return -EACCES; // Retorna erro ao tentar escrever no arquivo LDR
+    } else if (strcmp(attr_name, "led") == 0) {
+        printk(KERN_INFO "SmartLamp: Setando %s para %ld ...\n", attr_name, value);
+        usb_send_cmd("SET_LED ", value);
+    }
 
     if (ret < 0) {
         printk(KERN_ALERT "SmartLamp: erro ao setar o valor do %s.\n", attr_name);
