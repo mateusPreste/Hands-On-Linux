@@ -172,14 +172,33 @@ static int usb_send_cmd(char *cmd, int param) {
 // Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é lido (e.g., cat /sys/kernel/smartlamp/led)
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff) {
     // value representa o valor do led ou ldr
-    int value;
+    //int value;
     // attr_name representa o nome do arquivo que está sendo lido (ldr ou led)
-    const char *attr_name = attr->attr.name;
+    //const char *attr_name = attr->attr.name;
+
+    int value = 0; // variável usada para armazenar o valor lido do dispositivo
+    const char *attr_name = attr->attr.name; // obtém o nome do atributo que está sendo lido do objeto attr
+    int ret; // usada para armazenar o resultado das chamadas da funcao usb_send_cmd
 
     // printk indicando qual arquivo está sendo lido
-    printk(KERN_INFO "SmartLamp: Lendo %s ...\n", attr_name);
+    printk(KERN_INFO "SmartLamp: Lendo %s ...\n", attr_name); 
 
     // Implemente a leitura do valor do led ou ldr usando a função usb_send_cmd()
+     if (strcmp(attr_name, "led") == 0) {
+        // Leitura do LED
+        ret = usb_send_cmd("GET_LED", -1); // chama a função usb_send_cmd para enviar o comando GET_LED 
+    } else if (strcmp(attr_name, "ldr") == 0) {
+        // Leitura do LDR
+        ret = usb_send_cmd("GET_LDR", -1); // chama a função usb_send_cmd para enviar o comando GET_LDR
+    } else {
+        printk(KERN_ALERT "SmartLamp: Atributo desconhecido %s.\n", attr_name);
+        return -ENODEV;
+    }
+
+    if (ret < 0) {
+        printk(KERN_ALERT "SmartLamp: Erro ao ler %s.\n", attr_name); // Verifica se houve um erro ao enviar o comando USB (retornado por usb_send_cmd
+        return ret;
+    }
 
     sprintf(buff, "%d\n", value);                   // Cria a mensagem com o valor do led, ldr
     return strlen(buff);
