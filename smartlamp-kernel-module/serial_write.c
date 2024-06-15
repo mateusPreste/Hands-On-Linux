@@ -15,13 +15,13 @@ static uint usb_in, usb_out;                       // Endereços das portas de e
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-#define VENDOR_ID   SUBSTITUA_PELO_VENDORID /* Encontre o VendorID  do smartlamp */
-#define PRODUCT_ID  SUBSTITUA_PELO_PRODUCTID /* Encontre o ProductID do smartlamp */
+#define VENDOR_ID   0x10C4 /* Encontre o VendorID  do smartlamp */
+#define PRODUCT_ID  0xEA60 /* Encontre o ProductID do smartlamp */
 static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
 static void usb_disconnect(struct usb_interface *ifce);                           // Executado quando o dispositivo USB é desconectado da USB
-static int  usb_read_serial(void);                                                   // Executado para ler a saida da porta serial
+static int usb_write_serial(char *cmd, int param);
 
 MODULE_DEVICE_TABLE(usb, id_table);
 bool ignore = true;
@@ -52,9 +52,9 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
 
-    usb_write_serial(COMANDO_SMARTLAMP, VALOR);
+    usb_write_serial("SET_LED", 100);
 
-    printk("LDR Value: %d\n", LDR_value);
+    // printk("LDR Value: %d\n", LDR_value);
 
     return 0;
 }
@@ -75,6 +75,9 @@ static int usb_write_serial(char *cmd, int param) {
     // Grave o valor de usb_out_buffer com printk
 
     // Envie o comando pela porta Serial
+
+    sprintf(usb_out_buffer, "%s %d\n", cmd, param);
+    printk(KERN_INFO "%s\n", usb_out_buffer);
     ret = usb_bulk_msg(smartlamp_device, usb_sndbulkpipe(smartlamp_device, usb_out), usb_out_buffer, strlen(usb_out_buffer), &actual_size, 1000*HZ);
     if (ret) {
         printk(KERN_ERR "SmartLamp: Erro de codigo %d ao enviar comando!\n", ret);
