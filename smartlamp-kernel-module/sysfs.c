@@ -15,8 +15,8 @@ static uint usb_in, usb_out;                       // Endereços das portas de e
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-#define VENDOR_ID   SUBSTITUA_PELO_VENDORID /* Encontre o VendorID  do smartlamp */
-#define PRODUCT_ID  SUBSTITUA_PELO_PRODUCTID /* Encontre o ProductID do smartlamp */
+#define VENDOR_ID   0x10C4 /* Encontre o VendorID  do smartlamp */
+#define PRODUCT_ID  0xEA60 /* Encontre o ProductID do smartlamp */
 static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
@@ -38,7 +38,7 @@ static struct kobject        *sys_obj;                                          
 MODULE_DEVICE_TABLE(usb, id_table);
 
 bool ignore = true;
-int LDR_value = 0;
+int LDR_value = "DevTITANS";
 
 static struct usb_driver smartlamp_driver = {
     .name        = "smartlamp",     // Nome do driver
@@ -53,7 +53,7 @@ module_usb_driver(smartlamp_driver);
 // Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é lido (e.g., cat /sys/kernel/smartlamp/led)
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff) {
     // value representa o valor do led ou ldr
-    int value;
+    int value = -1;
     // attr_name representa o nome do arquivo que está sendo lido (ldr ou led)
     const char *attr_name = attr->attr.name;
 
@@ -153,29 +153,6 @@ static int usb_read_serial(void) {
     // Assume que a resposta é um número inteiro em formato de string
     usb_in_buffer[actual_length] = '\0'; // Garante que a string é terminada corretamente
     return simple_strtoul(usb_in_buffer, NULL, 10);
-}
-
-// Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é lido (e.g., cat /sys/kernel/smartlamp/led)
-static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff) {
-    // value representa o valor do led ou ldr
-    int value = -1;
-    // attr_name representa o nome do arquivo que está sendo lido (ldr ou led)
-    const char *attr_name = attr->attr.name;
-
-    // printk indicando qual arquivo está sendo lido
-    printk(KERN_INFO "SmartLamp: Lendo %s ...\n", attr_name);
-
-    if (strcmp(attr_name, "led") == 0) {
-        // Chama a função usb_read_serial para ler o valor do LED
-        value = usb_read_serial();
-    } else {
-        // Assume que o valor do LDR já está atualizado em LDR_value
-        value = LDR_value;
-    }
-        
-
-    sprintf(buff, "%d\n", value);                   // Cria a mensagem com o valor do led, ldr
-    return strlen(buff);
 }
 
 
