@@ -1,0 +1,5 @@
+1 - Montagem do Protótipo ESP32. Para os pinos usamos:
+PINO_LED = 23
+PINO_LDR = 33
+PINO_DHT = 26
+
