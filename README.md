@@ -27,7 +27,7 @@ Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este pr
 - **Nome do(a) Aluno(a) 01:** Desenvolvedor do Firmware e Mantenedor do Projeto (Erlon Bié)
 - **Nome do(a) Aluno(a) 02:** Desenvolvedor do Firmware (Evandro da Silva)
 - **Nome do(a) Aluno(a) 03:** Desenvolvedor do Driver Linux (Salomão Cruz)
-- **Nome do(a) Aluno(a) 04:** Desenvolvedor do Driver Linux (João Uchôa)
+- **Nome do(a) Aluno(a) 04:** Desenvolvedor do Driver Linux (João Rocha)
 - **Nome do(a) Aluno(a) 05:** Desenvolvedor do Firmware e Escritor da Documentação (Eduardo Albuquerque)
 
 ## Introdução
