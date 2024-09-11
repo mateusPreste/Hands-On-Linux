@@ -17,12 +17,12 @@
 
 
 // --- Definação de variáveis
-int ledPin = 5;
+int ledPin = 33;
 int ledValue = 0;
 
-int ldrPin = 36;
+int ldrPin = 32;
 int ldrValue = 10;
-int ldrMax = 1000;
+int ldrMax = 4045;
 
 // Função setup de configuração
 void setup() {
@@ -30,11 +30,13 @@ void setup() {
     
     pinMode(ledPin, OUTPUT);
     pinMode(ldrPin, INPUT);
+
+    analogWrite(ledPin, 10);
     
     delay(2000);
     Serial.printf("SmartLamp Initialized.\n");
 
-    // Uncomment line bellow to calibrate LDR max value
+    // Uncomment line bellow to recalibrate LDR max value
     // calibrate_ldrMax();
 
 }
@@ -47,21 +49,11 @@ void loop() {
     {     
       // Le o comando até que o timeout padrão (to do) seja esgotado 
       String command = Serial.readString();  
-      // Serial.println(command);
-
       processCommand(command);
-      // delay(100);
+      // delay(1000);
     }
     
 }
-
-// // Função responsável por calibrar o valor máximo do LDR
-// void calibrate_ldrMax()
-// {
-//     int value = analogRead(ldrPin);  // read the input pin
-//     Serial.println(value);
-//     delay(1000);
-// }
 
 // Função responsável por processar comandos
 void processCommand(String command) 
@@ -110,8 +102,25 @@ void ledUpdate(int ledValue) {
 
 // Função para ler o valor do LDR
 int ldrGetValue() {
-    // Leia o sensor LDR e retorne o valor normalizado entre 0 e 100
-    // faça testes para encontrar o valor maximo do ldr (exemplo: aponte a lanterna do celular para o sensor)       
-    // Atribua o valor para a variável ldrMax e utilize esse valor para a normalização
-    return 100;
+    // Leitura do sensor LDR
+    int value = analogRead(ldrPin); 
+    //Serial.printf("LDR sensor value: %d\n", value);
+
+    // Normalização do valor do sensor LDR para a faixa de 0 a 100
+    int ldrNormalizedValue = map(value, 0, 4045, 0, 100);
+    return ldrNormalizedValue;
+}
+
+// Função responsável por calibrar o valor máximo do LDR
+void calibrate_ldrMax()
+{   
+  // O Loop abaixo é utilizado para encontrar o valor maximo do LDR ao
+  // se apontar, por exemplo, a lanterna do celular para o sensor)       
+  while (true)
+  {
+    // Leitura de valor do sensor LDR
+    int value = analogRead(ldrPin); 
+    Serial.printf("LDR sensor value: %d\n", value);
+    delay(500);
+  }
 }
