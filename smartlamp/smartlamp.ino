@@ -47,7 +47,7 @@ void loop() {
     // Fica a espera de comandos seriais 
     while (Serial.available() == 0)
     {     
-      // Le o comando até que o timeout padrão (to do) seja esgotado 
+      // Lê o comando até que o timeout padrão (to do) seja esgotado 
       String command = Serial.readString();  
       processCommand(command);
       // delay(1000);
@@ -62,8 +62,9 @@ void processCommand(String command)
     String driver_command = command;
     driver_command.trim();  
     
-    // Condições que comparam comandos pré-estabelecidos e executam ações correspondentes
-    if (driver_command.indexOf("SET_LED") == 0) // encontrou o comando na serial
+    // ---- Condições que comparam comandos pré-estabelecidos e executam ações correspondentes
+    // Checa se o comando SET_LED foi recebido na serial
+    if (driver_command.indexOf("SET_LED") == 0) 
     {
       int index = driver_command.indexOf("SET_LED");
       ledValue = driver_command.substring(index + 8).toInt();
@@ -77,15 +78,18 @@ void processCommand(String command)
         Serial.printf("RES SET_LED %d\r\n", -1);  
       }
     }
+    // Checa se o comando GET_LED foi recebido na serial
     else if (driver_command == "GET_LED") 
     {
       Serial.printf("RES GET_LED %d\r\n", ledValue);  
     }
+    // Checa se o comando GET_LDR foi recebido na serial
     else if (driver_command == "GET_LDR")
     {
       ldrValue = ldrGetValue();
       Serial.printf("RES GET_LDR  %d\r\n", ldrValue);  
     }
+    // Checa se o comando qualquer outro comando diferente dos pre-estabelecidos foi recebido na serial
     else
     {
       Serial.println("ERR Unknown command");
@@ -94,9 +98,10 @@ void processCommand(String command)
 
 // Função para atualizar o valor do LED
 void ledUpdate(int ledValue) {
-    // Valor deve convertar o valor recebido pelo comando SET_LED para 0 e 255
-    // Normalize o valor do LED antes de enviar para a porta correspondente
+    // Normalizeação do valor do LED antes de envio para a porta correspondente
     int ledValueNormalized = map(ledValue, 0, 100, 0, 255);
+
+    // Envio de valor normazliado para a porta correspondente
     analogWrite(ledPin, ledValueNormalized);
 }
 
