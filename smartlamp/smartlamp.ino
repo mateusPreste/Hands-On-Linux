@@ -1,12 +1,12 @@
 // Defina os pinos de LED e LDR
 // Defina uma variável com valor máximo do LDR (4000)
 // Defina uma variável para guardar o valor atual do LED (10)
-int ledPin;
-int ledValue;
+int ledPin = 39;
+int ledValue = 0;
 
-int ldrPin;
+int ldrPin = 36;
 // Faça testes no sensor ldr para encontrar o valor maximo e atribua a variável ldrMax
-int ldrMax;
+int ldrMax = 1000;
 
 void setup() {
     Serial.begin(9600);
@@ -23,6 +23,17 @@ void setup() {
 void loop() {
     //Obtenha os comandos enviados pela serial 
     //e processe-os com a função processCommand
+    Serial.println("Enter data:");
+    while (Serial.available() == 0) {     //wait for data available
+      String teststr = Serial.readString();  //read until timeout
+      teststr.trim();                        // remove any \r \n whitespace at the end of the String
+      if (teststr == "red") {
+        Serial.println("A primary color");
+      } else {
+        Serial.println("Something else");
+      }
+    }
+    
 }
 
 
