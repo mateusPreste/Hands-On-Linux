@@ -71,7 +71,7 @@ static int usb_write_serial(char *cmd, int param) {
     char resp_expected[MAX_RECV_LINE];      // Resposta esperada do comando  
     
     // use a variavel usb_out_buffer para armazernar o comando em formato de texto que o firmware reconheça
-    usb_out_buffer = 
+    
     // Grave o valor de usb_out_buffer com printk
 
     // Envie o comando pela porta Serial
