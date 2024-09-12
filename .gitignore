@@ -1,2 +1,6 @@
 
 .vscode
+*.mod.c
+*.o
+*.ko
+*.mod
