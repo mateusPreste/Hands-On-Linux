@@ -38,6 +38,10 @@ void setup() {
 
     // Uncomment line bellow to recalibrate LDR max value
     // calibrate_ldrMax();
+    //Chamando o processo command para realizar tarefa  3. Ao final da tarefa apenas comentar a linha 
+    processCommand("GET_LDR");
+
+
 
 }
 
