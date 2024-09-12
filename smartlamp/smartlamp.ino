@@ -1,6 +1,6 @@
 /**
  * @file smartlamp.ino
- * @author Mateus (to do)
+ * @author Mateus Pantoja
  * @author Lahis Almeida (lahis.gomes.almeida@gmail.com)
  * @author Nelson (to do)
  * @author Itala (to do)
@@ -71,7 +71,7 @@ void processCommand(String command)
       if (ledValue >= 0 && ledValue <= 100)
       {
         ledUpdate(ledValue);
-        Serial.printf("RES SET_LED %d\r\n", ledValue);  
+        Serial.printf("RES SET_LED %d\r\n", 1);  
       }
       else
       {
