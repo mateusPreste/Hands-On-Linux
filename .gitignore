@@ -4,3 +4,6 @@
 *.o
 *.ko
 *.mod
+*.cmd
+Module.symvers
+modules.order

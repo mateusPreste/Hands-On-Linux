@@ -1,30 +1,36 @@
-// Defina os pinos de LED e LDR
-// Defina uma variável com valor máximo do LDR (4000)
-// Defina uma variável para guardar o valor atual do LED (10)
-int ledPin = 26;
-int ledValue = 10;
+/*
+  Autora: Jakeline Gimaque de Mesquita
+  Descrição: Firmware para lampada inteligente referente ao Hands-On de Linux do DevTITANS
+  Data: 13/09/2024
+*/
 
+// Pinos de LED e LDR
+int ledPin = 26;
 int ldrPin = 39;
-// Faça testes no sensor ldr para encontrar o valor maximo e atribua a variável ldrMax
+
+// Variável com valor máximo do LDR definido após teste
 int ldrMax = 4048;
 
+// Variável para guardar o valor atual do LED (valor inicial de 10)
+int ledValue = 10;
+
+
+
+//Função setup define os pinos como de entrada ou saída
 void setup() {
   Serial.begin(115200);
 
   pinMode(ledPin, OUTPUT);
-  //analogWrite(ledPin,200);
   pinMode(ldrPin, INPUT);
 
   Serial.printf("SmartLamp Initialized.\n");
-
-
-
 }
+
+
 
 // Função loop será executada infinitamente pelo ESP32
 void loop() {
-  //Obtenha os comandos enviados pela serial
-  //e processe-os com a função processCommand
+  //Obtem os comandos enviados pela serial e processa-os com a função processCommand
   if (Serial.available() > 0) {
     String command = Serial.readStringUntil('\n');
     processCommand(command);
@@ -33,45 +39,57 @@ void loop() {
 }
 
 
-void processCommand(String command) {
-  // compare o comando com os comandos possíveis e execute a ação correspondente
-  int spaceIndex = command.indexOf(' ');
-  String cmd = command.substring(0, spaceIndex);
-  String param = command.substring(spaceIndex + 1);
 
-  int new_cmd = 0;
+// Compara o recebido no loop com os comandos possíveis e executa a ação correspondente
+void processCommand(String command) {
+  int spaceIndex = command.indexOf(' ');
+  String cmd = command.substring(0, spaceIndex); //Variavel cmd armazenará o comando inserido
+  String param = command.substring(spaceIndex + 1); //Variavel param armazenará o numero que acompanha a entrada SET_LED
+
+
+  //Ajusta a intensidade da luz com base em um intervalo de 0 a 100 
   if (cmd == "SET_LED") {
-    int value = param.toInt();
-    if (value >= 0 && value <= 100) {
-      ledValue = value;
-      ledUpdate(value);
+    ledValue = param.toInt();
+    if (ledValue >= 0 && ledValue <= 100) {
+      ledUpdate(ledValue);
       Serial.println("RES SET_LED 1");
-    } else
+    } else {
+      ledValue = 10; //volta para o valor inicial
       Serial.println("RES SET_LED -1");
-  } else if (cmd == "GET_LED")
+    }
+
+  }
+
+
+  //Imprime a intensidade da luz na escala de 0 a 100
+  else if (cmd == "GET_LED")
     Serial.printf("RES GET_LED %s", String(ledValue));
+
+
+  //Imprime o valor do LDR na escala de 0 a 100
   else if (cmd == "GET_LDR") {
     int ldrValue = ldrGetValue();
     Serial.printf("RES GET_LDR %s", String(ldrValue));
-  } else
+  }
+  
+  //Imprime um erro indicando que o comando digitado não foi reconhecido
+  else
     Serial.println("ERR Unknown command.");
 
 }
 
+
+
 // Função para atualizar o valor do LED
+//Converte o valor recebido pelo comando SET_LED que esta na escala 0/100 para a escala de operação do Led
+//Quando o valor esta normalizado é enviado ao led pela porta logica
 void ledUpdate(int value) {
-  // Valor deve convertar o valor recebido pelo comando SET_LED para 0 e 255
-  // Normalize o valor do LED antes de enviar para a porta correspondente
-  Serial.println(value);
-    analogWrite(ledPin, map(value, 0, 100, 0, 255));
-  //analogWrite(ledPin, value);
+  analogWrite(ledPin, map(value, 0, 100, 0, 255));
+
 }
 
 // Função para ler o valor do LDR
 int ldrGetValue() {
-  // Leia o sensor LDR e retorne o valor normalizado entre 0 e 100
-  // faça testes para encontrar o valor maximo do ldr (exemplo: aponte a lanterna do celular para o sensor)
-  // Atribua o valor para a variável ldrMax e utilize esse valor para a normalização
-  int sensorValue = analogRead(ldrPin);
-  return map (sensorValue, 0, ldrMax, 0, 100);
+  int sensorValue = analogRead(ldrPin); //Ler o sensor LDR
+  return map (sensorValue, 0, ldrMax, 0, 100); //Retorna o valor do LDR na escala 0/100
 }
