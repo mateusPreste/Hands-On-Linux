@@ -100,6 +100,20 @@ static int usb_read_serial() {
 
         //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
         //retorne o valor de X em inteiro
+        // Verifica se a mensagem recebida contém "RES GET_LDR"
+        if (strncmp(usb_in_buffer, "RES GET_LDR", 11) == 0) {
+            // Extrai o valor X da resposta
+            int ldr_value;
+            sscanf(usb_in_buffer + 12, "%d", &ldr_value);
+            return ldr_value;
+        // Verifica se a mensagem recebida contém "RES GET_LED"
+        // caso contenha, extraia o valor X da resposta    
+        }else if (strncmp(usb_in_buffer, "RES GET_LED", 11) == 0) {
+            // Extrai o valor X da resposta
+            int led_value;
+            sscanf(usb_in_buffer + 12, "%d", &led_value);
+            return led_value;
+        }
         return 0;
     }
 
@@ -117,6 +131,7 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
     printk(KERN_INFO "SmartLamp: Lendo %s ...\n", attr_name);
 
     // Implemente a leitura do valor do led usando a função usb_read_serial()
+    value = usb_read_serial();
         
 
     sprintf(buff, "%d\n", value);                   // Cria a mensagem com o valor do led, ldr
