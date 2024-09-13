@@ -15,8 +15,8 @@ static uint usb_in, usb_out;                       // Endereços das portas de e
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-#define VENDOR_ID   SUBSTITUA_PELO_VENDORID /* Encontre o VendorID  do smartlamp */
-#define PRODUCT_ID  SUBSTITUA_PELO_PRODUCTID /* Encontre o ProductID do smartlamp */
+#define VENDOR_ID   4292 /* Encontre o VendorID  do smartlamp */
+#define PRODUCT_ID  60000/* Encontre o ProductID do smartlamp */
 static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
@@ -100,6 +100,20 @@ static int usb_read_serial() {
 
         //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
         //retorne o valor de X em inteiro
+        // Verifica se a mensagem recebida contém "RES GET_LDR"
+        if (strncmp(usb_in_buffer, "RES GET_LDR", 11) == 0) {
+            // Extrai o valor X da resposta
+            int ldr_value;
+            sscanf(usb_in_buffer + 12, "%d", &ldr_value);
+            return ldr_value;
+        // Verifica se a mensagem recebida contém "RES GET_LED"
+        // caso contenha, extraia o valor X da resposta    
+        }else if (strncmp(usb_in_buffer, "RES GET_LED", 11) == 0) {
+            // Extrai o valor X da resposta
+            int led_value;
+            sscanf(usb_in_buffer + 12, "%d", &led_value);
+            return led_value;
+        }
         return 0;
     }
 
@@ -117,6 +131,7 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
     printk(KERN_INFO "SmartLamp: Lendo %s ...\n", attr_name);
 
     // Implemente a leitura do valor do led usando a função usb_read_serial()
+    value = usb_read_serial();
         
 
     sprintf(buff, "%d\n", value);                   // Cria a mensagem com o valor do led, ldr

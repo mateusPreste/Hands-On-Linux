@@ -119,6 +119,30 @@ static int usb_send_cmd(char *cmd, int param) {
         }
 
         // adicione a sua implementação do médodo usb_read_serial
+        if (strncmp(usb_in_buffer, "RES GET_LDR", 11) == 0) {
+            // Extrai o valor X da resposta
+            int ldr_value;
+            sscanf(usb_in_buffer + 12, "%d", &ldr_value);
+            return ldr_value;
+        // Verifica se a mensagem recebida contém "RES GET_LED"
+        // caso contenha, extraia o valor X da resposta    
+        }else if (strncmp(usb_in_buffer, "RES GET_LED", 11) == 0) {
+            // Extrai o valor X da resposta
+            int led_value;
+            sscanf(usb_in_buffer + 12, "%d", &led_value);
+            return led_value;
+        }else if (strncmp(usb_in_buffer, "SET_LED", 7) == 0) {
+            // Constrói a mensagem para enviar de volta
+            char response[10];
+            snprintf(response, sizeof(response), "SET_LED %d", param);
+
+            // Envia a mensagem pela porta serial
+            ret = usb_write_serial(response, strlen(response));
+            if (ret < 0) {
+                printk(KERN_ERR "SmartLamp: Falha ao enviar resposta pela USB.\n");
+                return -1;
+            }
+        }
     }
     return -1; // Não recebi a resposta esperada do dispositivo
 }

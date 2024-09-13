@@ -72,17 +72,21 @@ static int usb_read_serial() {
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
         // Lê os dados da porta serial e armazena em usb_in_buffer
-            // usb_in_buffer - contem a resposta em string do dispositivo
-            // actual_size - contem o tamanho da resposta em bytes
+        // usb_in_buffer - contem a resposta em string do dispositivo
+        // actual_size - contem o tamanho da resposta em bytes
         ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
         if (ret) {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
         }
 
-        //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
-        //retorne o valor de X em inteiro
-        return 0;
+        // Verifica se a mensagem recebida contém "RES GET_LDR"
+        if (strncmp(usb_in_buffer, "RES GET_LDR", 11) == 0) {
+            // Extrai o valor X da resposta
+            int ldr_value;
+            sscanf(usb_in_buffer + 12, "%d", &ldr_value);
+            return ldr_value;
+        }
     }
 
     return -1; 
