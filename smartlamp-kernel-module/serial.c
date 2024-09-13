@@ -53,7 +53,7 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
 
     LDR_value = usb_read_serial();
 
-    printk("LDR Value: %d\n", LDR_value);
+    printk(KERN_INFO "SmartLamp:  LDR_VALUE %d\n", LDR_value);
 
     return 0;
 }
@@ -79,8 +79,12 @@ static int usb_read_serial() {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
         }
+
+        printk(KERN_INFO "SmartLamp: %s", usb_in_buffer);
+
+
         // Caso tenha lido os dados corretamente, verifica o valor da LDR
-        if (sscanf(usb_in_buffer, "RES_LDR %d", &LDR_value) == 1) {
+        if (sscanf(usb_in_buffer, "RES GET_LDR %d", &LDR_value) == 1) {
             // Retorna o valor lido da LDR se o formato for RES_LDR X
             return LDR_value;
         }
