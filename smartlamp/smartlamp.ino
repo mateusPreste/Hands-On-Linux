@@ -17,7 +17,7 @@
 
 
 // --- Definação de variáveis
-int ledPin = 33;
+int ledPin = 16;
 int ledValue = 0;
 
 int ldrPin = 32;
@@ -27,19 +27,19 @@ int ldrMax = 4045;
 // Função setup de configuração
 void setup() {
     Serial.begin(115200);
-    
+
     pinMode(ledPin, OUTPUT);
     pinMode(ldrPin, INPUT);
 
     analogWrite(ledPin, 10);
     
-    delay(2000);
+//    delay(2000);
     Serial.printf("SmartLamp Initialized.\n");
+    processCommand("GET_LDR");
 
     // Uncomment line bellow to recalibrate LDR max value
     // calibrate_ldrMax();
     //Chamando o processo command para realizar tarefa  3. Ao final da tarefa apenas comentar a linha 
-    processCommand("GET_LDR");
 
 
 
@@ -106,7 +106,8 @@ void ledUpdate(int ledValue) {
     int ledValueNormalized = map(ledValue, 0, 100, 0, 255);
 
     // Envio de valor normazliado para a porta correspondente
-    analogWrite(ledPin, ledValueNormalized);
+    analogWrite(ledPin, ledValueNormalized); //ledValueNormalized
+    delay(100);
 }
 
 // Função para ler o valor do LDR

@@ -9,14 +9,14 @@ MODULE_LICENSE("GPL");
 
 #define MAX_RECV_LINE 100 // Tamanho máximo de uma linha de resposta do dispositvo USB
 
-
+static char recv_line[MAX_RECV_LINE];              // Armazena dados vindos da USB até receber um caractere de nova linha '\n'
 static struct usb_device *smartlamp_device;        // Referência para o dispositivo USB
 static uint usb_in, usb_out;                       // Endereços das portas de entrada e saida da USB
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-#define VENDOR_ID   SUBSTITUA_PELO_VENDORID /* Encontre o VendorID  do smartlamp */
-#define PRODUCT_ID  SUBSTITUA_PELO_PRODUCTID /* Encontre o ProductID do smartlamp */
+#define VENDOR_ID   0x10c4 /* Encontre o VendorID  do smartlamp */
+#define PRODUCT_ID  0xea60 /* Encontre o ProductID do smartlamp */
 static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
@@ -66,15 +66,18 @@ static void usb_disconnect(struct usb_interface *interface) {
 }
 
 static int usb_read_serial() {
+    int recv_size = 0;                      // Quantidade de caracteres no recv_line
     int ret, actual_size;
     int retries = 10;                       // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
+    char *resp_pos;                         // Posição na linha lida que contém o número retornado pelo dispositivo
+    long resp_number = -1;                  // Número retornado pelo dispositivo (e.g., valor do led, valor do ldr)
 
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
         // Lê os dados da porta serial e armazena em usb_in_buffer
             // usb_in_buffer - contem a resposta em string do dispositivo
-            // actual_size - contem o tamanho da resposta em bytes
-        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
+            // actual_size - contem o tamanho da resposta emusb_in_buffer bytes
+        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, HZ*1000);
         if (ret) {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
@@ -82,8 +85,41 @@ static int usb_read_serial() {
 
         //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
         //retorne o valor de X em inteiro
-        return 0;
+    
+    
+        // Para cada caractere recebido ...
+        for (i=0; i<actual_size; i++) {
+
+            if (usb_in_buffer[i] == '\n') {  // Temos uma linha completa
+                recv_line[recv_size] = '\0';
+                printk(KERN_INFO "SmartLamp: Recebido uma linha: '%s'\n", recv_line);
+
+                // Verifica se o início da linha recebida é igual à resposta esperada do comando enviado
+                if (!strncmp(recv_line, "GET_LDR", strlen("GET_LDR"))) {
+                    printk(KERN_INFO "SmartLamp: %s! Processando ...\n", recv_line);
+
+                    // Acessa a parte da resposta que contém o número e converte para inteiro
+                    resp_pos = &recv_line[strlen("GET_LDR") + 1];
+                    ignore = kstrtol(resp_pos, 10, &resp_number);  // AQUI
+
+                    return resp_number;
+                }
+                else { // Não é a linha que estávamos esperando. Pega a próxima.
+                    printk(KERN_INFO "SmartLamp: Nao eh resposta para %s! Tentiva %d. Proxima linha...\n", cmd, retries--);
+                    recv_size = 0; // Limpa a linha lida (recv_line)
+                }
+            }
+            else { // É um caractere normal (sem ser nova linha), coloca no recv_line e lê o próximo caractere
+                recv_line[recv_size] = usb_in_buffer[i];
+                recv_size++;
+            }
+        }
     }
+    return -1; // Não recebi a resposta esperada do dispositivo
+}
+
+
+
 
     return -1; 
 }
