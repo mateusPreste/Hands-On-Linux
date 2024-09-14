@@ -1,2 +1,3 @@
  smartlamp-kernel-module/*.mod
- smartlamp-kernel-module/*.cm
+ smartlamp-kernel-module/*.cmd
+ smartlamp-kernel-module/*.ko
