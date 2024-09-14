@@ -21,7 +21,7 @@ static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
 static void usb_disconnect(struct usb_interface *ifce);                           // Executado quando o dispositivo USB é desconectado da USB
-static int  usb_read_serial(void);                                                   // Executado para ler a saida da porta serial
+static int  usb_write_serial(void);                                                   // Executado para ler a saida da porta serial
 
 MODULE_DEVICE_TABLE(usb, id_table);
 bool ignore = true;
@@ -52,7 +52,8 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
 
-    usb_write_serial(COMANDO_SMARTLAMP, VALOR);
+    usb_write_serial("SET LED", 0);
+    usb_write_serial("SET LED", 100);
 
     printk("LDR Value: %d\n", LDR_value);
 

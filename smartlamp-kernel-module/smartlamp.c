@@ -175,7 +175,7 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
         printk(KERN_ALERT "SmartLamp: valor de %s invalido.\n", attr_name);
         return -EACCES;
     }
-
+ 
     printk(KERN_INFO "SmartLamp: Setando %s para %ld ...\n", attr_name, value);
 
     // Se o arquivo sendo escrito for "led", envia o comando para ajustar o valor do LED
