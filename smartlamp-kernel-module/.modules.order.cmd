@@ -1,1 +1,1 @@
-cmd_/home/devtitans-2/Hands-On-Linux/smartlamp-kernel-module/modules.order := {   echo /home/devtitans-2/Hands-On-Linux/smartlamp-kernel-module/serial.ko; :; } | awk '!x[$$0]++' - > /home/devtitans-2/Hands-On-Linux/smartlamp-kernel-module/modules.order
+cmd_/home/devtitans-2/Hands-On-Linux/smartlamp-kernel-module/modules.order := {   echo /home/devtitans-2/Hands-On-Linux/smartlamp-kernel-module/sysfs.ko; :; } | awk '!x[$$0]++' - > /home/devtitans-2/Hands-On-Linux/smartlamp-kernel-module/modules.order

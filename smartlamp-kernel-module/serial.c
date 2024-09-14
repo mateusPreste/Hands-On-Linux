@@ -69,7 +69,7 @@ static int usb_read_serial(void) {
     int ret, actual_size;
     int retries = 10;                       // Tenta várias vezes antes de desistir
     char usb_in_buffer[MAX_RECV_LINE];     // Buffer para armazenar a resposta do dispositivo
-    int ldr_value = -1;                    // Valor do LDR a ser retornado
+    int ldr_value;                         // Valor do LDR a ser retornado
     char *pos;                             //Ponteiro para armazenar a posição na string onde uma substring é encontrada.
    
 
@@ -82,7 +82,7 @@ static int usb_read_serial(void) {
             continue;
         }
           // Imprime o conteúdo do buffer
-    printk(KERN_INFO "SmartLamp: Dados recebidos da USB (tentativa %d): %s\n", retries, usb_in_buffer);
+             printk(KERN_INFO "SmartLamp: Dados recebidos da USB (tentativa %d): %s\n", retries, usb_in_buffer);
 
         //// Verifica se recebeu uma mensagem no formato 'RES GET_LDR X'
         usb_in_buffer[actual_size] = '\0'; // Certifica-se de que a string está terminada com NULL
