@@ -66,24 +66,36 @@ static void usb_disconnect(struct usb_interface *interface) {
     kfree(usb_out_buffer);
 }
 
+// Função para enviar comandos via serial
 static int usb_write_serial(char *cmd, int param) {
-    int ret, actual_size;    
-    char resp_expected[MAX_RECV_LINE];      // Resposta esperada do comando  
+    int ret, actual_size;
     
-    // use a variavel usb_out_buffer para armazernar o comando em formato de texto que o firmware reconheça
-    
-    // Grave o valor de usb_out_buffer com printk
+    // Formatar o comando que será enviado para o dispositivo
+    sprintf(usb_out_buffer, "%s %d\n", cmd, param);
+    printk(KERN_INFO "SmartLamp: Enviando comando: %s", usb_out_buffer);
 
-    // Envie o comando pela porta Serial
-    ret = usb_bulk_msg(smartlamp_device, usb_sndbulkpipe(smartlamp_device, usb_out), usb_out_buffer, strlen(usb_out_buffer), &actual_size, 1000*HZ);
+    // Enviar o comando via USB (bulk message)
+    ret = usb_bulk_msg(smartlamp_device, usb_sndbulkpipe(smartlamp_device, usb_out), usb_out_buffer, strlen(usb_out_buffer), &actual_size, 1000);
     if (ret) {
-        printk(KERN_ERR "SmartLamp: Erro de codigo %d ao enviar comando!\n", ret);
+        printk(KERN_ERR "SmartLamp: Erro ao enviar comando para a USB. Código: %d\n", ret);
         return -1;
     }
 
-    // Use essa variavel para fazer a integração com a função usb_read_serial
-    // resp_expected deve conter a resposta esperada do comando enviado e deve ser comparada com a resposta recebida
+    printk(KERN_INFO "SmartLamp: Comando enviado com sucesso!\n");
+
+    // Definir a resposta esperada com base no comando enviado
+    char resp_expected[MAX_RECV_LINE];
     sprintf(resp_expected, "RES %s", cmd);
 
-    return -1; 
+    // Chamar função para ler a resposta do dispositivo
+    ret = usb_read_serial();
+    
+    // Verificar se a resposta do dispositivo corresponde à esperada
+    if (strncmp(usb_in_buffer, resp_expected, strlen(resp_expected)) == 0) {
+        printk(KERN_INFO "SmartLamp: Resposta esperada recebida: %s\n", usb_in_buffer);
+        return 0;
+    } else {
+        printk(KERN_ERR "SmartLamp: Resposta inesperada: %s\n", usb_in_buffer);
+        return -1;
+    }
 }

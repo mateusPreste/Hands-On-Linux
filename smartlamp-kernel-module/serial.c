@@ -67,29 +67,36 @@ static void usb_disconnect(struct usb_interface *interface) {
 
 static int usb_read_serial() {
     int ret, actual_size;
-    int retries = 10;                       // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
+    int retries = 10;  // Número de tentativas de ler da USB
+    const int response_prefix_len = 12; // Comprimento do prefixo "RES GET_LDR "
+    int ldr_value = -1;  // Variável que vai armazenar o valor do LDR
 
-    // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
+    // Loop de tentativas para ler a resposta correta do dispositivo
     while (retries > 0) {
-        // Lê os dados da porta serial e armazena em usb_in_buffer
-            // usb_in_buffer - contem a resposta em string do dispositivo
-            // actual_size - contem o tamanho da resposta em bytes
-        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
-        if (ret) {
+
+        // Tenta ler os dados da porta serial e armazena no buffer usb_in_buffer
+        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 5000);
+         if (ret) {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
         }
 
-        printk(KERN_INFO "SmartLamp: %s", usb_in_buffer);
+        // Adiciona o terminador de string no final da mensagem recebida
+        usb_in_buffer[actual_size] = '\0';
+        printk(KERN_INFO "SmartLamp: Dados recebidos: %s\n", usb_in_buffer);
 
-
-        // Caso tenha lido os dados corretamente, verifica o valor da LDR
-        if (sscanf(usb_in_buffer, "RES GET_LDR %d", &LDR_value) == 1) {
-            // Retorna o valor lido da LDR se o formato for RES_LDR X
-            return LDR_value;
+        // Verifica se a resposta começa com "RES GET_LDR "
+        if (strncmp(usb_in_buffer, "RES GET_LDR ", response_prefix_len) == 0) {
+            
+            // Extrai o valor do LDR da resposta recebida
+            ldr_value = simple_strtol(usb_in_buffer + response_prefix_len, NULL, 10);
+            printk(KERN_INFO "SmartLamp: Valor do LDR recebido: %d\n", ldr_value);
+            return ldr_value;  // Retorna o valor do LDR recebido
         }
-        return 0;
+
+        retries--;
     }
 
-    return -1; 
+    printk(KERN_ERR "SmartLamp: Falha ao ler o valor do LDR após várias tentativas.\n");
+    return -1;  // Retorna -1 se não conseguir ler o valor do LDR
 }
