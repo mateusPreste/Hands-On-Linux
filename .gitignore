@@ -1,3 +1,14 @@
- smartlamp-kernel-module/*.mod
- smartlamp-kernel-module/*.cmd
- smartlamp-kernel-module/*.ko
+/smartlamp-kernel-module/*.mod
+/smartlamp-kernel-module/*.cmd
+/smartlamp-kernel-module/*.ko
+/smartlamp-kernel-module/.*.ko.cmd
+/smartlamp-kernel-module/.*.mod.cmd
+/smartlamp-kernel-module/.*.o.cmd
+/smartlamp-kernel-module/*.symvers
+/smartlamp-kernel-module/.*.symvers.cmd
+/smartlamp-kernel-module/.*.order.cmd
+/smartlamp-kernel-module/*.mod.c
+/smartlamp-kernel-module/*.mod.o
+/smartlamp-kernel-module/*.o
+/smartlamp-kernel-module/*.order
+
