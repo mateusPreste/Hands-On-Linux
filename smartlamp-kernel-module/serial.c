@@ -65,48 +65,39 @@ static void usb_disconnect(struct usb_interface *interface) {
     kfree(usb_out_buffer);
 }
 
-static int usb_read_serial() {
+static int usb_read_serial(void) {
     int ret, actual_size;
-    int retries = 10;                       // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
-    char buffer[MAX_RECV_LINE];            // Buffer para armazenar a resposta
-    // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
+    int retries = 10;                       // Tenta várias vezes antes de desistir
+    char usb_in_buffer[MAX_RECV_LINE];     // Buffer para armazenar a resposta do dispositivo
+    int ldr_value = -1;                    // Valor do LDR a ser retornado
+    char *pos;                             //Ponteiro para armazenar a posição na string onde uma substring é encontrada.
+   
+
     while (retries > 0) {
-        // Lê os dados da porta serial e armazena em usb_in_buffer
-            // usb_in_buffer - contem a resposta em string do dispositivo
-            // actual_size - contem o tamanho da resposta em bytes
-        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
-                if (ret) {
+        // Lê os dados da porta serial
+        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, sizeof(usb_in_buffer), &actual_size, 2000); // Aumenta o tempo de espera
+        if (ret) { //Se a leitura falhar (retorna um código de erro), é impresso um erro e a função tenta novamente, decrementando retries.
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", retries, ret);
             retries--;
             continue;
         }
+          // Imprime o conteúdo do buffer
+    printk(KERN_INFO "SmartLamp: Dados recebidos da USB (tentativa %d): %s\n", retries, usb_in_buffer);
 
-        // Verifica se a resposta é longa o suficiente
-        if (actual_size < 12) { // "RES GET_LDR " tem 12 caracteres
-            printk(KERN_ERR "SmartLamp: Resposta muito curta\n");
-            retries--;
-            continue;
+        //// Verifica se recebeu uma mensagem no formato 'RES GET_LDR X'
+        usb_in_buffer[actual_size] = '\0'; // Certifica-se de que a string está terminada com NULL
+        pos = strstr(usb_in_buffer, "RES GET_LDR "); //Procura a substring "RES GET_LDR " na string lida.
+        if (pos) {
+            // Extraí o valor de X, que está logo após "RES GET_LDR "
+            if (sscanf(pos + strlen("RES GET_LDR "), "%d", &ldr_value) == 1) {
+                return ldr_value; // Retorna o valor de X como inteiro
+            } else {
+                printk(KERN_ERR "SmartLamp: Falha ao interpretar o valor LDR\n");
+                return -1;
+            }
         }
-
-        // Verifica se a resposta começa com "RES GET_LDR "
-        if (strncmp((char *)usb_in_buffer, "RES GET_LDR ", 12) != 0) {
-            printk(KERN_ERR "SmartLamp: Resposta inválida\n");
-            retries--;
-            continue;
-        }
-
-        // Copia o valor de X para o buffer
-        memcpy(buffer, usb_in_buffer + 12, actual_size - 12);
-        buffer[actual_size - 12] = '\0'; // Garantir que a string seja terminada
-
-        // Converte a string para inteiro
-        int value = simple_strtol(buffer, NULL, 10);
-
-        return value;
     }
 
-    // Se falhar após várias tentativas, retorne um erro
-    printk(KERN_ERR "SmartLamp: Falha ao ler valor do LDR\n");
-
-    return -1; 
+    printk(KERN_ERR "SmartLamp: Não foi possível obter resposta da USB\n");
+    return -1;  // Retorna -1 em caso de erro
 }
