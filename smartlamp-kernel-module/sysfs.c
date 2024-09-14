@@ -29,7 +29,7 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
 static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff, size_t count);   
 
 // Variáveis para criar os arquivos no /sys/kernel/smartlamp/{led, ldr}
-static struct kobj_attribute  led_attribute = __ATTR(led, S_IRUGO | S_IWUSR, attr_show, attr_store);
+static struct kobj_attribute  led_attribute = __ATTR(le d, S_IRUGO | S_IWUSR, attr_show, attr_store);
 static struct kobj_attribute  ldr_attribute = __ATTR(ldr, S_IRUGO | S_IWUSR, attr_show, attr_store);
 static struct attribute      *attrs[]       = { &led_attribute.attr, &ldr_attribute.attr, NULL };
 static struct attribute_group attr_group    = { .attrs = attrs };
@@ -102,7 +102,7 @@ static int usb_read_serial() {
         // leitura do valor do buffer caso tenha a mensagem 'RES_LDR X', retornando o valor somente. 
         if (sscanf(usb_in_buffer, "RES_LDR %d", &LDR_value))
         {
-            return LDR_value    
+            return LDR_value;    
         }
         return 0;
     }
@@ -120,9 +120,16 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
     // printk indicando qual arquivo está sendo lido
     printk(KERN_INFO "SmartLamp: Lendo %s ...\n", attr_name);
 
+    
+    if (strcmp(attr_name, "led") == 0) {
+        printk(KERN_INFO "SmartLamp: Leonardo Barros");
+    } else if (strcmp(attr_name, "ldr") == 0) {
+        printk(KERN_INFO "SmartLamp: DevTITANS");
+    }
+
     // Leitura do valor do ldr caso seja ele o consultado.
     if(strcmp(attr_name, "ldr") == 0){
-        value = usb_read_serial()
+        value = usb_read_serial();
     }
 
     sprintf(buff, "%d\n", value);                   // Cria a mensagem com o valor do led, ldr
@@ -141,6 +148,11 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
     if (ret) {
         printk(KERN_ALERT "SmartLamp: valor de %s invalido.\n", attr_name);
         return -EACCES;
+    }
+
+    if (strcmp(attr_name, "ldr") == 0) {
+        printk(KERN_ALERT "SmartLamp: erro ao setar o valor do %s.\n", attr_name);
+        return -EACCES;   
     }
 
     printk(KERN_INFO "SmartLamp: Setando %s para %ld ...\n", attr_name, value);
