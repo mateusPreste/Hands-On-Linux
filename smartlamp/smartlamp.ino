@@ -18,12 +18,14 @@ int ledValue = 10;
 
 //Função setup define os pinos como de entrada ou saída
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   pinMode(ledPin, OUTPUT);
   pinMode(ldrPin, INPUT);
 
   Serial.printf("SmartLamp Initialized.\n");
+  String command = "GET_LDR";
+  processCommand(command);
 }
 
 
@@ -52,10 +54,10 @@ void processCommand(String command) {
     ledValue = param.toInt();
     if (ledValue >= 0 && ledValue <= 100) {
       ledUpdate(ledValue);
-      Serial.println("RES SET_LED 1");
+      Serial.println("RES SET_LED 1\n");
     } else {
       ledValue = 10; //volta para o valor inicial
-      Serial.println("RES SET_LED -1");
+      Serial.println("RES SET_LED -1\n");
     }
 
   }
@@ -63,13 +65,13 @@ void processCommand(String command) {
 
   //Imprime a intensidade da luz na escala de 0 a 100
   else if (cmd == "GET_LED")
-    Serial.printf("RES GET_LED %s", String(ledValue));
+    Serial.printf("RES GET_LED %s\n", String(ledValue));
 
 
   //Imprime o valor do LDR na escala de 0 a 100
   else if (cmd == "GET_LDR") {
     int ldrValue = ldrGetValue();
-    Serial.printf("RES GET_LDR %s", String(ldrValue));
+    Serial.printf("RES GET_LDR %s\n", String(ldrValue));
   }
   
   //Imprime um erro indicando que o comando digitado não foi reconhecido

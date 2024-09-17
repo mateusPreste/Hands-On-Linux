@@ -15,8 +15,8 @@ static uint usb_in, usb_out;                       // Endereços das portas de e
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-#define VENDOR_ID   SUBSTITUA_PELO_VENDORID /* Encontre o VendorID  do smartlamp */
-#define PRODUCT_ID  SUBSTITUA_PELO_PRODUCTID /* Encontre o ProductID do smartlamp */
+#define VENDOR_ID   4292 /* Encontre o VendorID  do smartlamp */
+#define PRODUCT_ID  60000/* Encontre o ProductID do smartlamp */
 static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
@@ -68,6 +68,7 @@ static void usb_disconnect(struct usb_interface *interface) {
 static int usb_read_serial() {
     int ret, actual_size;
     int retries = 10;                       // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
+    char resposta[20];
 
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
@@ -75,19 +76,28 @@ static int usb_read_serial() {
         // usb_in_buffer - contem a resposta em string do dispositivo
         // actual_size - contem o tamanho da resposta em bytes
         ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
+        
         if (ret) {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
-        }
+        }else{
+            printk(KERN_INFO "SmartLamp: Dados lidos da USB: %s\n", usb_in_buffer);
+            while(1){
+                //processa comando
+                ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
+        
+                if (ret) {
+                    break;         
+                }
+                printk(KERN_INFO "SmartLamp: Dados lidos da USB: %s\n", usb_in_buffer);
 
-        // Verifica se a mensagem recebida contém "RES GET_LDR"
-        if (strncmp(usb_in_buffer, "RES GET_LDR", 11) == 0) {
-            // Extrai o valor X da resposta
-            int ldr_value;
-            sscanf(usb_in_buffer + 12, "%d", &ldr_value);
-            return ldr_value;
+            }
+
+            //o commando ta aqui...
+            
         }
+        
+            printk(KERN_INFO "SmartLamp: Dados lidos da USB: %s\n", usb_in_buffer);   
     }
-
     return -1; 
 }
