@@ -24,8 +24,6 @@ void setup() {
   pinMode(ldrPin, INPUT);
 
   Serial.printf("SmartLamp Initialized.\n");
-  String command = "GET_LDR";
-  processCommand(command);
 }
 
 

@@ -12,7 +12,7 @@ case $comando in
         ;;
     "SET_LED")
         if [ -n "$argumento" ]; then
-            echo $argumento | sudo tee -a /sys/kernel/smartlamp/led
+            echo $argumento | sudo tee /sys/kernel/smartlamp/led
         else
             echo "ERROR: Argumento esperado para SET_LED"
         fi
