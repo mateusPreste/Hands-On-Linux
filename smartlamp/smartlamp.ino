@@ -26,16 +26,17 @@ int ldrMax = 4045;
 
 // Função setup de configuração
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
 
     pinMode(ledPin, OUTPUT);
     pinMode(ldrPin, INPUT);
 
     analogWrite(ledPin, 10);
     
-//    delay(2000);
-    Serial.printf("SmartLamp Initialized.\n");
+    delay(1000);
+//    Serial.printf("SmartLamp Initialized.\n");
     processCommand("GET_LDR");
+
 
     // Uncomment line bellow to recalibrate LDR max value
     // calibrate_ldrMax();
@@ -49,13 +50,13 @@ void setup() {
 void loop() {
 
     // Fica a espera de comandos seriais 
-    while (Serial.available() == 0)
-    {     
-      // Lê o comando até que o timeout padrão (to do) seja esgotado 
-      String command = Serial.readString();  
-      processCommand(command);
-      // delay(1000);
-    }
+//    while (Serial.available() == 0)
+//    {     
+//      // Lê o comando até que o timeout padrão (to do) seja esgotado 
+//      String command = Serial.readString();  
+//      processCommand(command);
+//      // delay(1000);
+//    }
     
 }
 
@@ -91,7 +92,7 @@ void processCommand(String command)
     else if (driver_command == "GET_LDR")
     {
       ldrValue = ldrGetValue();
-      Serial.printf("RES GET_LDR  %d\r\n", ldrValue);  
+      Serial.printf("RES GET_LDR %d\r\n", ldrValue);  
     }
     // Checa se o comando qualquer outro comando diferente dos pre-estabelecidos foi recebido na serial
     else
