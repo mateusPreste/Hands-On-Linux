@@ -1,177 +1,151 @@
-    #include <linux/module.h>
-    #include <linux/usb.h>
-    #include <linux/slab.h>
+#include <linux/module.h>
+#include <linux/usb.h>
+#include <linux/slab.h>
 
-    MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
-    MODULE_DESCRIPTION("Driver de acesso ao SmartLamp (ESP32 com Chip Serial CP2102)");
-    MODULE_LICENSE("GPL");
+MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
+MODULE_DESCRIPTION("Driver de acesso ao SmartLamp (ESP32 com Chip Serial CP2102)");
+MODULE_LICENSE("GPL");
 
-    #define MAX_RECV_LINE 100 // Tamanho máximo de uma linha de resposta do dispositivo USB
+#define MAX_RECV_LINE 100 // Tamanho máximo de uma linha de resposta do dispositivo USB
+#define TEST_COMMAND "GET_LDR"
 
-    static struct usb_device *smartlamp_device;        // Referência para o dispositivo USB
-    static uint usb_in, usb_out;                       // Endereços das portas de entrada e saída da USB
-    static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
-    static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
+static struct usb_device *smartlamp_device;        // Referência para o dispositivo USB
+static uint usb_in, usb_out;                       // Endereços das portas de entrada e saída da USB
+static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
+static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-    #define VENDOR_ID   0x10c4  /* Encontre o VendorID do smartlamp */
-    #define PRODUCT_ID  0xea60  /* Encontre o ProductID do smartlamp */
-    static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
+#define VENDOR_ID   0x10c4  /* Encontre o VendorID do smartlamp */
+#define PRODUCT_ID  0xea60  /* Encontre o ProductID do smartlamp */
+static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
-    static int usb_probe(struct usb_interface *ifce, const struct usb_device_id *id);
-    static void usb_disconnect(struct usb_interface *ifce);
-    static int usb_read_serial(void);
+static int usb_probe(struct usb_interface *ifce, const struct usb_device_id *id);
+static void usb_disconnect(struct usb_interface *ifce);
+static int usb_read_serial(void);
+char* concat(const char *s1, const char *s2);
 
-    MODULE_DEVICE_TABLE(usb, id_table);
+MODULE_DEVICE_TABLE(usb, id_table);
 
-    static struct usb_driver smartlamp_driver = {
-        .name       = "smartlamp",
-        .probe      = usb_probe,
-        .disconnect = usb_disconnect,
-        .id_table   = id_table,
-    };
+static struct usb_driver smartlamp_driver = {
+    .name       = "smartlamp",
+    .probe      = usb_probe,
+    .disconnect = usb_disconnect,
+    .id_table   = id_table,
+};
 
-    module_usb_driver(smartlamp_driver);
+module_usb_driver(smartlamp_driver);
 
-    static int usb_probe(struct usb_interface *interface, const struct usb_device_id *id) {
-        struct usb_endpoint_descriptor *usb_endpoint_in = NULL, *usb_endpoint_out = NULL;
-        struct usb_host_interface *interface_desc;
-        int i;
+static int usb_probe(struct usb_interface *interface, const struct usb_device_id *id) {
+    struct usb_endpoint_descriptor *usb_endpoint_in = NULL, *usb_endpoint_out = NULL;
+    struct usb_host_interface *interface_desc;
+    int i;
 
-        printk(KERN_INFO "SmartLamp:     Dispositivo conectado ...\n");
+    printk(KERN_INFO "SmartLamp:     Dispositivo conectado ...\n");
 
-        smartlamp_device = interface_to_usbdev(interface);
+    smartlamp_device = interface_to_usbdev(interface);
 
-        interface_desc = interface->cur_altsetting;
+    interface_desc = interface->cur_altsetting;
 
-        // Itera sobre os endpoints da interface
-        for (i = 0; i < interface_desc->desc.bNumEndpoints; ++i) {
-            struct usb_endpoint_descriptor *endpoint = &interface_desc->endpoint[i].desc;
+    // Itera sobre os endpoints da interface
+    for (i = 0; i < interface_desc->desc.bNumEndpoints; ++i) {
+        struct usb_endpoint_descriptor *endpoint = &interface_desc->endpoint[i].desc;
 
-            if (usb_endpoint_dir_in(endpoint)) {
-                usb_endpoint_in = endpoint;
-            } else if (usb_endpoint_dir_out(endpoint)) {
-                usb_endpoint_out = endpoint;
-            }
+        if (usb_endpoint_dir_in(endpoint)) {
+            usb_endpoint_in = endpoint;
+        } else if (usb_endpoint_dir_out(endpoint)) {
+            usb_endpoint_out = endpoint;
         }
-
-        if (!usb_endpoint_in || !usb_endpoint_out) {
-            printk(KERN_ERR "SmartLamp: Não conseguiu encontrar endpoints.\n");
-            return -ENODEV;
-        }
-
-        usb_max_size = usb_endpoint_maxp(usb_endpoint_in);
-        usb_in = usb_endpoint_in->bEndpointAddress;
-        usb_out = usb_endpoint_out->bEndpointAddress;
-
-        usb_in_buffer = kmalloc(usb_max_size, GFP_KERNEL);
-        usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
-        if (!usb_in_buffer || !usb_out_buffer) {
-            printk(KERN_ERR "SmartLamp: Falha na alocação de buffers.\n");
-            kfree(usb_in_buffer);
-            kfree(usb_out_buffer);
-            return -ENOMEM;
-        }
-
-        int LDR_value = usb_read_serial();
-        printk(KERN_INFO "SmartLamp: LDR_VALUE %d\n", LDR_value);
-
-        return 0;
     }
 
-    static void usb_disconnect(struct usb_interface *interface) {
-        printk(KERN_INFO "SmartLamp: Dispositivo desconectado.\n");
+    if (!usb_endpoint_in || !usb_endpoint_out) {
+        printk(KERN_ERR "SmartLamp: Não conseguiu encontrar endpoints.\n");
+        return -ENODEV;
+    }
+
+    usb_max_size = usb_endpoint_maxp(usb_endpoint_in);
+    usb_in = usb_endpoint_in->bEndpointAddress;
+    usb_out = usb_endpoint_out->bEndpointAddress;
+
+    usb_in_buffer = kmalloc(usb_max_size, GFP_KERNEL);
+    usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
+    if (!usb_in_buffer || !usb_out_buffer) {
+        printk(KERN_ERR "SmartLamp: Falha na alocação de buffers.\n");
         kfree(usb_in_buffer);
         kfree(usb_out_buffer);
+        return -ENOMEM;
     }
+    
+    // test_serial_communication();
+
+    int LDR_value = usb_read_serial();
+    printk(KERN_INFO "SmartLamp: LDR_VALUE %d\n", LDR_value);
+
+    return 0;
+}
+
+
+static void usb_disconnect(struct usb_interface *interface) {
+    printk(KERN_INFO "SmartLamp: Dispositivo desconectado.\n");
+    kfree(usb_in_buffer);
+    kfree(usb_out_buffer);
+}
+
+char* concat(const char *s1, const char *s2) {
+    const size_t len1 = s1 ? strlen(s1) : 0; // Handle NULL for s1
+    const size_t len2 = strlen(s2);          // s2 should not be NULL
+
+    char *result = kmalloc(len1 + len2 + 1, GFP_KERNEL); // +1 for the null-terminator
+
+    if (!result) {
+        printk(KERN_ERR "Memory allocation failed\n");
+        return NULL;
+    }
+
+    // If s1 is not NULL, copy it to result
+    if (s1) {
+        memcpy(result, s1, len1);
+    }
+    // Copy s2 to result, including the null-terminator
+    memcpy(result + len1, s2, len2 + 1); // +1 to copy the null-terminator
+
+    return result;
+}
 
 static int usb_read_serial() {
     int ret, actual_size;
-    int retries = 36;
+    int retries = 2;  // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
+    char *response_prefix = "RES GET_LDR ";
+    char *resp = NULL;
+    int response_prefix_len = strlen(response_prefix);
     int ldr_value = -1;
-    char *search_str = "SmartLamp Initialized.\n";
-    char *response_start = "RES GET_LDR ";
-    char *found_pos;
-    char *resp;
-    size_t resp_size = 0;
-    size_t search_str_len = strlen(search_str);
-    size_t response_start_len = strlen(response_start);
-
-    // Aloca memória para o buffer de resposta
-    resp = kmalloc(usb_max_size + 1, GFP_KERNEL);
-    if (!resp) {
-        printk(KERN_ERR "SmartLamp: Falha na alocação de memória para o buffer de resposta.\n");
-        return -ENOMEM;
-    }
-
-    // Inicializa o buffer de resposta
-    memset(resp, 0, usb_max_size + 1);
-
-    printk(KERN_INFO "SmartLamp: Iniciando leitura da serial.\n");
-
+    // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
-        // Tenta ler dados da USB
-        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in),
-                           usb_in_buffer, usb_max_size, &actual_size, 5000);
-        if (ret) {
-            printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Código: %d\n", retries, ret);
-            retries--;
+        // Lê os dados da porta serial e armazena em usb_in_buffer
+        // usb_in_buffer - contem a resposta em string do dispositivo
+        // actual_size - contem o tamanho da resposta em bytes
+        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
+         if (ret) {
+            printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", retries--, ret);
             continue;
         }
+        usb_in_buffer[actual_size] = '\0'; // Assegura que o buffer está terminado em null
+        
+        // Concatena os valores obtidos do buffer
+        resp = concat(resp, usb_in_buffer); // Concatenate the usb_in_buffer to resp
 
-        usb_in_buffer[actual_size] = '\0'; // Termina a string
-
-        // Concatena o buffer de entrada à resposta acumulada
-        if (resp_size + actual_size < usb_max_size) {
-            memcpy(resp + resp_size, usb_in_buffer, actual_size);
-            resp_size += actual_size;
-            resp[resp_size] = '\0'; // Termina a string
-        } else {
-            printk(KERN_ERR "SmartLamp: Buffer de resposta excedido. Tamanho atual: %zu\n", resp_size);
-            kfree(resp);
-            return -ENOMEM;
-        }
-
-        // Verifica se a mensagem "SmartLamp Initialized.\n" foi encontrada
-        found_pos = strstr(resp, search_str);
-        if (found_pos) {
-            printk(KERN_INFO "SmartLamp: Mensagem inicializada encontrada. Buffer acumulado: %s\n", resp);
-
-            // Avança o buffer para começar após a mensagem inicial
-            size_t offset = found_pos - resp + search_str_len;
-            size_t remaining_size = resp_size - offset;
-            if (remaining_size > 0) {
-                memmove(resp, resp + offset, remaining_size);
-                resp[remaining_size] = '\0'; // Termina a string
-                resp_size = remaining_size;
-            } else {
-                resp[0] = '\0'; // Limpa o buffer se não houver dados restantes
-                resp_size = 0;
+        // printk(KERN_INFO "SmartLamp: Dados recebidos: (%s)\n", resp);
+        
+        // Verifica se a resposta começa com "RES GET_LDR "
+        if (strncmp(resp, response_prefix, response_prefix_len) == 0) {
+            // Verifica se a resposta tem comprimento suficiente para conter o valor
+            // printk(KERN_INFO "SmartLamp: actual_size : %d, prefix_lenght : %d", (int)strlen(resp), response_prefix_len);
+            if ((int)strlen(resp) > response_prefix_len) {
+                // Extrai o valor após o prefixo
+                ldr_value = simple_strtol(resp + response_prefix_len, NULL, 13);
+                printk(KERN_INFO "SmartLamp: LDR Value recebido: %d\n", ldr_value);
+                return ldr_value;
             }
-
-            // Procura pela resposta relevante após a mensagem inicial
-            found_pos = strstr(resp, response_start);
-            if (found_pos) {
-                // Obtém o valor após "RES GET_LDR "
-                size_t value_offset = found_pos - resp + response_start_len;
-                char *value_str = resp + value_offset;
-                ldr_value = simple_strtol(value_str, NULL, 10);
-                printk(KERN_INFO "SmartLamp: Valor do LDR recebido: %d\n", ldr_value);
-                kfree(resp);
-                return ldr_value; // Retorna o valor do LDR recebido
-            } else {
-                printk(KERN_INFO "SmartLamp: Mensagem de resposta 'RES GET_LDR ' não encontrada após a mensagem inicial. Buffer: %s\n", resp);
-            }
-        } else {
-            printk(KERN_INFO "SmartLamp: Mensagem inicial não encontrada ainda. Buffer acumulado: %s\n", resp);
         }
-
-        retries--;
-        printk(KERN_INFO "SmartLamp: Tentativas restantes: %d\n", retries);
     }
-
-    printk(KERN_ERR "SmartLamp: Falha ao ler o valor do LDR após várias tentativas. Buffer final: %s\n", resp);
-    kfree(resp);
-    return -1; // Retorna -1 se não conseguir ler o valor do LDR
+    return -1;
 }
-
 

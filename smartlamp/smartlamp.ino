@@ -14,12 +14,10 @@ void setup() {
     pinMode(ledPin, OUTPUT);
     pinMode(ldrPin, INPUT);
     
-    Serial.printf("SmartLamp Initialized.\n");
-
-    Serial.setTimeout(10);
-
-
+    Serial.println("SmartLamp Initialized.");
+    delay(2000);
     processCommand(String("GET_LDR"));
+    // Serial.println(analogRead(ldrPin));
 
 
 }
@@ -33,6 +31,8 @@ void loop() {
       String str = Serial.readString();
       str.trim();
       processCommand(str);
+      // delay(1000);
+      // processCommand(String("GET_LDR"));
     }
 
 
