@@ -3,6 +3,8 @@
 comando=$1
 argumento=$2
 
+sudo chmod 777 /sys/kernel/smartlamp/led
+sudo chmod 777 /sys/kernel/smartlamp/ldr
 case $comando in 
     "GET_LED")
         cat /sys/kernel/smartlamp/led
@@ -12,7 +14,7 @@ case $comando in
         ;;
     "SET_LED")
         if [ -n "$argumento" ]; then
-            echo $argumento | sudo tee /sys/kernel/smartlamp/led
+            echo $argumento | sudo tee /sys/kernel/smartlamp/led 
         else
             echo "ERROR: Argumento esperado para SET_LED"
         fi

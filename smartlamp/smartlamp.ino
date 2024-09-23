@@ -52,10 +52,10 @@ void processCommand(String command) {
     ledValue = param.toInt();
     if (ledValue >= 0 && ledValue <= 100) {
       ledUpdate(ledValue);
-      Serial.println("RES SET_LED 1\n");
+      Serial.println("RES SET_LED 1");
     } else {
       ledValue = 10; //volta para o valor inicial
-      Serial.println("RES SET_LED -1\n");
+      Serial.println("RES SET_LED -1");
     }
 
   }

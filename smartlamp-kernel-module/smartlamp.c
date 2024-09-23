@@ -89,39 +89,38 @@ static int usb_read_serial() {
     char *resp_pos;                         // Posição na linha lida que contém o número retornado pelo dispositivo
     char *res;                // Resposta recebida do dispositivo
     int res_num;
-    int aux=0;
+    int aux = 0;
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
         // Lê os dados da porta serial e armazena em usb_in_buffer
         // usb_in_buffer - contem a resposta em string do dispositivo
         // actual_size - contem o tamanho da resposta em bytes
-        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 5000);
+        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
         
         if (ret) {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", retries--, ret);
             continue;
-        }else{
-            printk(KERN_INFO "SmartLamp: Recebido %s\n", usb_in_buffer);
-            for (int i = 0; i < actual_size; i++) {
-                resp_expected[aux+i] = usb_in_buffer[i];
-            }
-            aux += actual_size;
-            res = strnstr(resp_expected, "GET", strlen(resp_expected));
+        }
+        printk(KERN_INFO "SmartLamp: Recebido %s\n", usb_in_buffer);
+        for (int i = 0; i < actual_size; i++) {
+            resp_expected[aux + i] = usb_in_buffer[i];
+            if (usb_in_buffer[i] == '\n') {
+                resp_expected[aux] = '\0';  
 
-            //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
-            //retorne o valor de X em inteiro
-            // Verifica se a mensagem recebida contém "RES GET_LDR"
-            if (res != NULL) {
-                resp_pos = strstr(res, " ");
-                if (resp_pos != NULL) {
-                    if (kstrtoint(resp_pos + 1, 10, &res_num) == 0) {
-                        return res_num;
+                res = strstr(resp_expected, "GET");
+                if (res != NULL) {
+                    resp_pos = strstr(res, " ");
+                    if (resp_pos != NULL) {
+                        if (kstrtoint(resp_pos + 1, 10, &res_num) == 0) {
+                            return res_num;
+                        }
                     }
                 }
+                break;
             }
-            
         }
-    }
+        aux += actual_size;
+    }  
     return -1; 
 }
 
@@ -153,7 +152,6 @@ static int usb_send_cmd(char *cmd, long param) {
         printk(KERN_ERR "SmartLamp: Erro de codigo %d ao enviar comando!\n", ret);
         return -1;
     }
-    
 
     // adicione a sua implementação do médodo usb_read_serial
     resp_number = usb_read_serial();
