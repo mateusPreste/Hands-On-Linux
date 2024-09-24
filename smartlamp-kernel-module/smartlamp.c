@@ -107,11 +107,12 @@ static int usb_read_serial() {
             if (usb_in_buffer[i] == '\n') {
                 resp_expected[aux] = '\0';  
 
-                res = strstr(resp_expected, "GET");
+                res = strstr(resp_expected, "_");
                 if (res != NULL) {
                     resp_pos = strstr(res, " ");
                     if (resp_pos != NULL) {
                         if (kstrtoint(resp_pos + 1, 10, &res_num) == 0) {
+                             printk(KERN_INFO "res: %d", res_num);
                             return res_num;
                         }
                     }

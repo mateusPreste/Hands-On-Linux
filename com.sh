@@ -6,18 +6,24 @@ argumento=$2
 sudo chmod 777 /sys/kernel/smartlamp/led
 sudo chmod 777 /sys/kernel/smartlamp/ldr
 case $comando in 
-    "GET_LED")
+    "get_led")
         cat /sys/kernel/smartlamp/led
         ;;
-    "GET_LDR")
+    "get_ldr")
         cat /sys/kernel/smartlamp/ldr
         ;;
-    "SET_LED")
+    "set_led")
         if [ -n "$argumento" ]; then
             echo $argumento | sudo tee /sys/kernel/smartlamp/led 
         else
             echo "ERROR: Argumento esperado para SET_LED"
         fi
+        ;;
+    "get_ldr_all")
+        while true; do
+            cat /sys/kernel/smartlamp/ldr
+            sleep 0.8
+        done
         ;;
     *)
         echo "Comando desconhecido: $comando"
