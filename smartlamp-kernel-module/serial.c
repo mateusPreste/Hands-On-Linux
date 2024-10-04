@@ -89,63 +89,88 @@ static void usb_disconnect(struct usb_interface *interface) {
     kfree(usb_out_buffer);
 }
 
-char* concat(const char *s1, const char *s2) {
-    const size_t len1 = s1 ? strlen(s1) : 0; // Handle NULL for s1
-    const size_t len2 = strlen(s2);          // s2 should not be NULL
 
-    char *result = kmalloc(len1 + len2 + 1, GFP_KERNEL); // +1 for the null-terminator
-
-    if (!result) {
-        printk(KERN_ERR "Memory allocation failed\n");
-        return NULL;
-    }
-
-    // If s1 is not NULL, copy it to result
-    if (s1) {
-        memcpy(result, s1, len1);
-    }
-    // Copy s2 to result, including the null-terminator
-    memcpy(result + len1, s2, len2 + 1); // +1 to copy the null-terminator
-
-    return result;
-}
-
-static int usb_read_serial() {
+static int usb_read_serial(void) {
     int ret, actual_size;
-    int retries = 2;  // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
+    int retries = 10;  // Número de tentativas de leitura da USB
     char *response_prefix = "RES GET_LDR ";
-    char *resp = NULL;
     int response_prefix_len = strlen(response_prefix);
     int ldr_value = -1;
-    // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
+    char buffer[MAX_RECV_LINE + 1];  // Buffer acumulado
+    int buffer_len = 0;
+    bool prefix_found = false;  // Indica se o prefixo foi encontrado
+
+    // Inicializa o buffer
+    memset(buffer, 0, sizeof(buffer));
+
+    // Tenta ler dados da USB até 10 vezes ou até encontrar o valor desejado
     while (retries > 0) {
-        // Lê os dados da porta serial e armazena em usb_in_buffer
-        // usb_in_buffer - contem a resposta em string do dispositivo
-        // actual_size - contem o tamanho da resposta em bytes
-        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
-         if (ret) {
+        // Lê os dados da porta USB e armazena em usb_in_buffer
+        ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in),
+                           usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 5000);
+        if (ret) {
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", retries--, ret);
             continue;
         }
-        usb_in_buffer[actual_size] = '\0'; // Assegura que o buffer está terminado em null
-        
-        // Concatena os valores obtidos do buffer
-        resp = concat(resp, usb_in_buffer); // Concatenate the usb_in_buffer to resp
 
-        // printk(KERN_INFO "SmartLamp: Dados recebidos: (%s)\n", resp);
-        
-        // Verifica se a resposta começa com "RES GET_LDR "
-        if (strncmp(resp, response_prefix, response_prefix_len) == 0) {
-            // Verifica se a resposta tem comprimento suficiente para conter o valor
-            // printk(KERN_INFO "SmartLamp: actual_size : %d, prefix_lenght : %d", (int)strlen(resp), response_prefix_len);
-            if ((int)strlen(resp) > response_prefix_len) {
-                // Extrai o valor após o prefixo
-                ldr_value = simple_strtol(resp + response_prefix_len, NULL, 13);
-                printk(KERN_INFO "SmartLamp: LDR Value recebido: %d\n", ldr_value);
-                return ldr_value;
+        // Adiciona os novos dados ao buffer acumulado
+        if (buffer_len + actual_size < MAX_RECV_LINE) {
+            strncpy(buffer + buffer_len, usb_in_buffer, actual_size);
+            buffer_len += actual_size;
+        } else {
+            printk(KERN_ERR "SmartLamp: Buffer estourado. Dados recebidos são muito grandes.\n");
+            break;
+        }
+
+        // Garante que o buffer acumulado está terminado em null
+        buffer[buffer_len] = '\0';
+
+        printk(KERN_INFO "SmartLamp: Dados acumulados: %s\n", buffer);
+
+        // Verifica se o prefixo "RES GET_LDR " foi encontrado
+        if (!prefix_found) {
+            char *start = strstr(buffer, response_prefix);
+            if (start != NULL) {
+                prefix_found = true;
+                // Remove qualquer dado "lixo" antes do prefixo
+                buffer_len = strlen(start);
+                memmove(buffer, start, buffer_len);
+                buffer[buffer_len] = '\0';  // Assegura o final da string
+                printk(KERN_INFO "SmartLamp: Prefixo encontrado, processamento iniciado.\n");
+            } else {
+                // Se não encontrou o prefixo, continua acumulando dados
+                printk(KERN_INFO "SmartLamp: Prefixo não encontrado, aguardando mais dados...\n");
+                continue;
             }
         }
+
+        // Se o prefixo foi encontrado, verifica se já recebemos uma linha completa (terminada por '\n')
+        if (prefix_found && strchr(buffer, '\n')) {
+            // Extrai o valor após o prefixo e antes do '\n'
+            char *number_start = buffer + response_prefix_len;
+            char *endptr;
+            long value = simple_strtol(number_start, &endptr, 10);
+
+            // Se a conversão foi bem-sucedida e encontramos um número
+            if (endptr != number_start) {
+                ldr_value = (int)value;
+                printk(KERN_INFO "SmartLamp: LDR Value recebido: %d\n", ldr_value);
+                return ldr_value;
+            } else {
+                printk(KERN_INFO "SmartLamp: Prefixo encontrado, mas número ainda não disponível.\n");
+            }
+
+            // Limpa o buffer depois de processar a linha completa
+            memset(buffer, 0, sizeof(buffer));
+            buffer_len = 0;
+            prefix_found = false;  // Reseta para procurar por outro prefixo se necessário
+        }
+
+        retries--;
     }
-    return -1;
+
+    printk(KERN_ERR "SmartLamp: Não foi possível ler o valor do LDR após várias tentativas.\n");
+    return -1;  // Retorna -1 se não conseguiu ler um valor válido
 }
+
 
