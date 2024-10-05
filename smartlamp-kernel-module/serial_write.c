@@ -53,7 +53,7 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
 
-    usb_write_serial("SET LED", 0);
+    // usb_write_serial("SET_LED", 0);
     usb_write_serial("SET_LED", 100);
 
     return 0;
@@ -87,7 +87,7 @@ static int usb_write_serial(char *cmd, int param) {
         printk(KERN_INFO "SmartLamp: Tentando enviar comando... {%s} %d\n", usb_out_buffer, usb_sndbulkpipe(smartlamp_device, usb_out));
 
         ret = usb_bulk_msg(smartlamp_device, usb_sndbulkpipe(smartlamp_device, usb_out),
-                        usb_out_buffer, strlen(usb_out_buffer), &actual_size, 5000);
+        usb_out_buffer, strlen(usb_out_buffer), &actual_size, 1000*HZ);
         attempt++;
         if (ret) {
         printk(KERN_ERR "SmartLamp: -Error sending bulk message: %d\n", ret);
@@ -146,10 +146,10 @@ static int usb_read_serial(void) {
     char response[MAX_RECV_LINE];  // Armazena a resposta do ESP32
     char *start_ptr;
     
+    memset(response, 0, sizeof(response));
     // Continuar tentando ler a mensagem do ESP32 até o máximo de tentativas
-    while (attempts < 10) {
+    while (attempts < 20) {
         // Limpa o buffer de resposta
-        memset(response, 0, sizeof(response));
 
         // Lê a resposta do ESP32
         ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in),
@@ -161,6 +161,8 @@ static int usb_read_serial(void) {
 
         // Acumula o conteúdo lido no buffer
         strncat(response, usb_in_buffer, actual_size);
+        printk(KERN_INFO "SmartLamp: RESPOSTA: %s\n", response);
+
 
         // Verifica se o buffer contém um fim de linha '\n', indicando que a resposta está completa
         start_ptr = strchr(response, '\n');

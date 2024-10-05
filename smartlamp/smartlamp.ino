@@ -1,7 +1,7 @@
 // Defina os pinos de LED e LDR
 // Defina uma variável com valor máximo do LDR (4000)
 // Defina uma variável para guardar o valor atual do LED (10)
-int ledPin = 19;
+int ledPin = 18;
 int ledValue = 10;
 
 int ldrPin = 4;
@@ -15,8 +15,8 @@ void setup() {
     pinMode(ldrPin, INPUT);
     
     Serial.println("SmartLamp Initialized.");
-    delay(2000);
-    processCommand(String("GET_LDR"));
+    // delay(2000);
+    // processCommand(String("GET_LDR"));
     // Serial.println(analogRead(ldrPin));
 
 

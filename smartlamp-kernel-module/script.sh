@@ -79,6 +79,7 @@ while true; do
             remove_module
             stop_dmesg
             echo "Saindo..."
+            sudo modprobe cp210x
             exit 0
             ;;
 
