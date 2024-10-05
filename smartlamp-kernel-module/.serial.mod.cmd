@@ -1,1 +1,0 @@
-cmd_/home/devtitans-2/handsPantoja/smartlamp-kernel-module/serial.mod := { echo  /home/devtitans-2/handsPantoja/smartlamp-kernel-module/serial.o;  echo; } > /home/devtitans-2/handsPantoja/smartlamp-kernel-module/serial.mod

@@ -1,1 +1,0 @@
-cmd_/home/devtitans-2/handsPantoja/smartlamp-kernel-module/modules.order := {   echo /home/devtitans-2/handsPantoja/smartlamp-kernel-module/serial.ko; :; } | awk '!x[$$0]++' - > /home/devtitans-2/handsPantoja/smartlamp-kernel-module/modules.order
