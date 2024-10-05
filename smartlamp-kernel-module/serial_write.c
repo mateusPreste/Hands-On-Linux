@@ -2,6 +2,7 @@
 #include <linux/usb.h>
 #include <linux/slab.h>
 
+
 MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
 MODULE_DESCRIPTION("Driver de acesso ao SmartLamp (ESP32 com Chip Serial CP2102");
 MODULE_LICENSE("GPL");
@@ -72,10 +73,15 @@ static int usb_write_serial(char *cmd, int param) {
     char resp_expected[MAX_RECV_LINE];      // Resposta esperada do comando  
     
     // use a variavel usb_out_buffer para armazernar o comando em formato de texto que o firmware reconheça
-    usb_out_buffer =  "SET_LED 0\n";
 
+    // Concatena a string (cmd) e o número (param)
+    //usb_out_buffer =  "SET_LED 0\n";
+    snprintf(usb_out_buffer, usb_max_size, "%s %d", cmd, param);
+    
     // Grave o valor de usb_out_buffer com printk
     // printk(KERN_INFO "SmartLamp: Dispositivo desconectado.\n");
+    printk("Command: %s\n", usb_out_buffer);
+   
 
     // Envie o comando pela porta Serial
     ret = usb_bulk_msg(smartlamp_device, usb_sndbulkpipe(smartlamp_device, usb_out), usb_out_buffer, strlen(usb_out_buffer), &actual_size, 1000*HZ);
@@ -89,5 +95,7 @@ static int usb_write_serial(char *cmd, int param) {
     
     sprintf(resp_expected, "RES %s", cmd);
 
+    // free(usb_out_buffer);
+    
     return -1; 
 }
