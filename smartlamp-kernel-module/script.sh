@@ -1,9 +1,11 @@
 #!/bin/bash
 
+module="serial_write.ko"
+
 # Function to remove the kernel module
 remove_module() {
     echo "Removing kernel module..."
-    sudo rmmod serial.ko 2>/dev/null || echo "Module not loaded."
+    sudo rmmod $module 2>/dev/null || echo "Module not loaded."
     echo "Cleaning..."
     make clean
 }
@@ -44,9 +46,9 @@ while true; do
             # Remove the Arduino module with sudo, ignoring errors if not loaded
             sudo rmmod cp210x 2>/dev/null || echo "Module cp210x not loaded."
 
-            echo "Installing kernel module: serial"
+            echo "Installing kernel module: {$module}" 
             # Insert the kernel module with sudo
-            time sudo insmod serial.ko
+            time sudo insmod $module
             ;;
 
         2)
