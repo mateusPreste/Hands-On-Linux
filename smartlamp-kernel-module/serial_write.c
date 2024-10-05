@@ -161,7 +161,7 @@ static int usb_read_serial(void) {
 
         // Acumula o conteúdo lido no buffer
         strncat(response, usb_in_buffer, actual_size);
-        printk(KERN_INFO "SmartLamp: RESPOSTA: %s\n", response);
+        printk(KERN_INFO "SmartLamp: RESPOSTA: %d\n", response);
 
 
         // Verifica se o buffer contém um fim de linha '\n', indicando que a resposta está completa
