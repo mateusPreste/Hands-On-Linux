@@ -53,8 +53,8 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
 
-    // usb_write_serial("SET LED", 0);
-    usb_write_serial("SET LED", 100);
+    usb_write_serial("SET LED", 0);
+    usb_write_serial("SET_LED", 100);
 
     return 0;
 }
@@ -69,13 +69,12 @@ static void usb_disconnect(struct usb_interface *interface) {
 // Função para enviar comandos via serial
 static int usb_write_serial(char *cmd, int param) {
     int ret, actual_size;
-    char usb_out_buffer[MAX_RECV_LINE];   // Buffer para o comando enviado
     char resp_expected[MAX_RECV_LINE];    // Resposta esperada do comando enviado
     int response_value;
 
     // Formatar o comando de forma que o firmware o reconheça
     // Por exemplo: "SET_LED 100" ou "GET_LDR"
-    snprintf(usb_out_buffer, MAX_RECV_LINE, "%s %d", cmd, param);
+    snprintf(usb_out_buffer, MAX_RECV_LINE, "%s %d\n", cmd, param);
 
     // Exibir o comando que será enviado
     printk(KERN_INFO "SmartLamp: Enviando comando: %s\n", usb_out_buffer);
@@ -88,10 +87,10 @@ static int usb_write_serial(char *cmd, int param) {
         printk(KERN_INFO "SmartLamp: Tentando enviar comando... {%s} %d\n", usb_out_buffer, usb_sndbulkpipe(smartlamp_device, usb_out));
 
         ret = usb_bulk_msg(smartlamp_device, usb_sndbulkpipe(smartlamp_device, usb_out),
-                        usb_out_buffer, strlen(usb_out_buffer), &actual_size, 10*HZ);
+                        usb_out_buffer, strlen(usb_out_buffer), &actual_size, 5000);
         attempt++;
-        if (ret < 0) {
-        printk(KERN_ERR "SmartLamp: Error sending bulk message: %d\n", ret);
+        if (ret) {
+        printk(KERN_ERR "SmartLamp: -Error sending bulk message: %d\n", ret);
         // Add more specific error handling based on the return value
         if (ret == -ETIMEDOUT) {
             printk(KERN_ERR "SmartLamp: Timeout occurred\n");
@@ -206,7 +205,7 @@ static int usb_read_serial(void) {
                 attempts++;
             }
         } else {
-            printk(KERN_INFO "SmartLamp: Aguardando por resposta completa...\n");
+            printk(KERN_INFO "SmartLam  p: Aguardando por resposta completa...\n");
             attempts++;
         }
     }

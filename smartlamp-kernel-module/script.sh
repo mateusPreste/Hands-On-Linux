@@ -67,7 +67,7 @@ while true; do
             # Executa o comando para monitorar logs do SmartLamp em segundo plano
             if [[ $dmesg_pid -eq 0 ]]; then
                 echo "Monitorando logs do SmartLamp em segundo plano..."
-                sudo dmesg -w | grep SmartLamp &
+                sudo dmesg -w &
                 dmesg_pid=$!  # Armazena o PID do processo de segundo plano
             else
                 echo "Monitoramento de logs já está em execução."
