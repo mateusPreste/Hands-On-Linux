@@ -50,13 +50,13 @@ void setup() {
 void loop() {
 
     // Fica a espera de comandos seriais 
-//    while (Serial.available() == 0)
-//    {     
-//      // Lê o comando até que o timeout padrão (to do) seja esgotado 
-//      String command = Serial.readString();  
-//      processCommand(command);
-//      // delay(1000);
-//    }
+   if (Serial.available() > 0)
+   {     
+     // Lê o comando até que o timeout padrão (to do) seja esgotado 
+     String command = Serial.readString();  
+     processCommand(command);
+     // delay(1000);
+   }
     
 }
 

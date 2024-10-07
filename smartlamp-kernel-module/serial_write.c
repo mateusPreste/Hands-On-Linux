@@ -1,6 +1,9 @@
 #include <linux/module.h>
 #include <linux/usb.h>
 #include <linux/slab.h>
+#include <linux/delay.h>  // Para msleep e ssleep
+
+
 
 
 MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
@@ -53,10 +56,13 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_in_buffer = kmalloc(usb_max_size, GFP_KERNEL);
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
-
+    ssleep(1);
     usb_write_serial("SET_LED", 100);
 
     printk("LDR Value: %d\n", LDR_value);
+
+    ssleep(2);
+    usb_write_serial("SET_LED", 0);
 
     return 0;
 }
@@ -76,7 +82,7 @@ static int usb_write_serial(char *cmd, int param) {
 
     // Concatena a string (cmd) e o número (param)
     //usb_out_buffer =  "SET_LED 0\n";
-    snprintf(usb_out_buffer, usb_max_size, "%s %d", cmd, param);
+    snprintf(usb_out_buffer, usb_max_size, "%s %d\r\n", cmd, param);
     
     // Grave o valor de usb_out_buffer com printk
     // printk(KERN_INFO "SmartLamp: Dispositivo desconectado.\n");
