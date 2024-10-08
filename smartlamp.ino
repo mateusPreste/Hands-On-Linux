@@ -112,10 +112,10 @@ void processCommand(String command)
       Serial.printf("RES GET_TEMP %.2f\r\n", tempValue);  
     }
     // Checa se o comando GET_TEMP foi recebido na serial
-    else if (driver_command == "GET_HUMI")
+    else if (driver_command == "GET_HUM")
     {
       float humiValue = humiGetValue();
-      Serial.printf("RES GET_HUMI %.2f\r\n", humiValue);  
+      Serial.printf("RES GET_HUM %.2f\r\n", humiValue);  
     }
     // Checa se o comando qualquer outro comando diferente dos pre-estabelecidos foi recebido na serial
     else
