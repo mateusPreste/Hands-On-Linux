@@ -60,7 +60,7 @@ void loop() {
     delay(2000);
 
     // Fica a espera de comandos seriais 
-    while (Serial.available() == 0)
+    while (Serial.available() > 0)
     {     
       // Lê o comando até que o timeout padrão (to do) seja esgotado 
       String command = Serial.readString();  
