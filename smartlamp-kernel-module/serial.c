@@ -26,7 +26,7 @@ char* concat(const char *s1, const char *s2);
 MODULE_DEVICE_TABLE(usb, id_table);
 
 static struct usb_driver smartlamp_driver = {
-    .name       = "smartlamp",
+    .name       = "smartlamp_read",
     .probe      = usb_probe,
     .disconnect = usb_disconnect,
     .id_table   = id_table,

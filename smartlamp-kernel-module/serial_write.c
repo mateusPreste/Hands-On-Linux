@@ -54,7 +54,7 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
 
 
     // usb_write_serial("SET_LED", 0);
-    usb_write_serial("SET_LED", 100);
+    // usb_write_serial("SET_LED", 100);
 
     return 0;
 }
@@ -207,7 +207,7 @@ static int usb_read_serial(void) {
                 attempts++;
             }
         } else {
-            printk(KERN_INFO "SmartLam  p: Aguardando por resposta completa...\n");
+            printk(KERN_INFO "SmartLamp: Aguardando por resposta completa...\n");
             attempts++;
         }
     }

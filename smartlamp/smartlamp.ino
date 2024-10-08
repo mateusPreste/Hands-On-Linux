@@ -41,6 +41,8 @@ void loop() {
 
 void processCommand(String command) {
     // compare o comando com os comandos possíveis e execute a ação correspondente     
+    Serial.print("command :");
+    Serial.println(command);
 
     if (command.equals(String("GET_LDR"))){
         Serial.printf("RES GET_LDR %d\n", ldrGetValue());

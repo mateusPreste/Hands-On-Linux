@@ -1,6 +1,6 @@
 #!/bin/bash
 
-module="serial_write.ko"
+module="smartlamp.ko"
 
 # Function to remove the kernel module
 remove_module() {
