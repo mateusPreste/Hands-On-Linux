@@ -33,7 +33,10 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
 // Variáveis para criar os arquivos no /sys/kernel/smartlamp/{led, ldr}
 static struct kobj_attribute  led_attribute = __ATTR(led, S_IRUGO | S_IWUSR, attr_show, attr_store);
 static struct kobj_attribute  ldr_attribute = __ATTR(ldr, S_IRUGO | S_IWUSR, attr_show, attr_store);
-static struct attribute      *attrs[]       = { &led_attribute.attr, &ldr_attribute.attr, NULL };
+static struct kobj_attribute  temp_attribute = __ATTR(temp, S_IRUGO | S_IWUSR, attr_show, attr_store);
+static struct kobj_attribute  hum_attribute = __ATTR(hum, S_IRUGO | S_IWUSR, attr_show, attr_store);
+
+static struct attribute      *attrs[]       = { &led_attribute.attr, &ldr_attribute.attr, &temp_attribute.attr, &hum_attribute.attr, NULL };
 static struct attribute_group attr_group    = { .attrs = attrs };
 static struct kobject        *sys_obj;                                             // Executado para ler a saida da porta serial
 
@@ -105,9 +108,9 @@ static int usb_send_cmd(char *cmd, int param) {
     memset(usb_out_buffer, 0, sizeof(usb_out_buffer));
     
     if(param < 0){
-        snprintf(usb_out_buffer, usb_max_size, "%s\r\n", cmd);
+        sprintf(usb_out_buffer, "%s\r\n", cmd);
     }else if (param >= 0  & param <= 100) {
-        snprintf(usb_out_buffer, usb_max_size, "%s %d\r\n", cmd, param);
+        sprintf(usb_out_buffer, "%s %d\r\n", cmd, param);
     }
     // Envia o comando (usb_out_buffer) para a USB
     // Procure a documentação da função usb_bulk_msg para entender os parâmetros
@@ -173,6 +176,10 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
         value = usb_send_cmd("GET_LDR", -1);
     } else if(attr_name == "led") {
         value = usb_send_cmd("GET_LED", -1);
+    } else if (attr_name == "temp") {
+        value = usb_send_cmd("GET_TEMP", -1);
+    } else if (attr_name == "hum") {
+        value = usb_send_cmd("GET_HUM", -1);
     }
   
 
@@ -201,7 +208,7 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
     if(attr_name == "led"){
         ret = usb_send_cmd("SET_LED", (int)value);
     } else {
-        printk(KERN_ALERT "SmartLamp: erro ao setar o valor do %s.\n", attr_name);
+        printk(KERN_ALERT "SmartLamp: %s não permite comando SET.\n", attr_name);
         ret = -1;
     }
 

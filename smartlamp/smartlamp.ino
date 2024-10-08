@@ -108,7 +108,7 @@ void ledUpdate(int ledValue) {
 
     // Envio de valor normazliado para a porta correspondente
     analogWrite(ledPin, ledValueNormalized); //ledValueNormalized
-    delay(100);
+    delay(50);
 }
 
 // Função para ler o valor do LDR
