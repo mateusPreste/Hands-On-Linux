@@ -1,0 +1,1 @@
+cmd_/home/pantoja/devtitans/Hands-On-Linux/smartlamp-kernel-module/smartlamp.mod := printf '%s\n'   smartlamp.o | awk '!x[$$0]++ { print("/home/pantoja/devtitans/Hands-On-Linux/smartlamp-kernel-module/"$$0) }' > /home/pantoja/devtitans/Hands-On-Linux/smartlamp-kernel-module/smartlamp.mod
