@@ -1,0 +1,11 @@
+###---Pinagem do Prototipo Montado---
+
+o pino 1 (à esquerda) do sensor a +3.3V
+
+o pino 2 do sensor ao seu DHTPIN
+
+o pino 3 (à direita) do sensor ao GROUND (se o seu sensor tiver 3 pinos)
+
+o pino 4 (à direita) do sensor ao TERRA e deixe o pino 3 VAZIO (se seu sensor tiver 4 pinos)
+
+resistor de 10K do pino 2 (dados) ao pino 1 (potência) do sensor

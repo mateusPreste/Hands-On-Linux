@@ -3,26 +3,34 @@
  * @author Mateus Pantoja
  * @author Lahis Almeida (lahis.gomes.almeida@gmail.com)
  * @author Nelson (to do)
- * @author Itala (to do)
+ * @author Pedro Mendes (to do)
  * @author Wanderson  (to do)
  * 
  * @brief Main code of ESP32 smartlamp firmware. This code is responsible for (... to do)
  * 
  * @version 1.0
- * @date 2024-09-11
+ * @date 2024-10-08
  * 
  * @copyright Copyright (c) 2024
  * 
  */
+// --- Definação de includes
+ #include "DHT.h"
 
+ // --- Definação de defines
+#define DHTTYPE DHT11 
+#define DHTPIN 14
 
 // --- Definação de variáveis
-int ledPin = 16;
+int ledPin = 26;
 int ledValue = 0;
 
-int ldrPin = 32;
+int ldrPin = 27;
 int ldrValue = 10;
 int ldrMax = 4045;
+
+
+DHT dht(DHTPIN, DHTTYPE);
 
 // Função setup de configuração
 void setup() {
@@ -31,11 +39,13 @@ void setup() {
     pinMode(ledPin, OUTPUT);
     pinMode(ldrPin, INPUT);
 
-    analogWrite(ledPin, 10);
+
+    analogWrite(ledPin, 0);
+    dht.begin();
+  
     
-    delay(1000);
 //    Serial.printf("SmartLamp Initialized.\n");
-    processCommand("GET_LDR");
+    processCommand("GET_TEMP");
 
 
     // Uncomment line bellow to recalibrate LDR max value
@@ -48,16 +58,17 @@ void setup() {
 
 // Função loop será executada infinitamente pelo ESP32
 void loop() {
+    delay(2000);
 
     // Fica a espera de comandos seriais 
-   if (Serial.available() > 0)
-   {     
-     // Lê o comando até que o timeout padrão (to do) seja esgotado 
-     String command = Serial.readString();  
-     processCommand(command);
-     // delay(1000);
-   }
-    
+    while (Serial.available() > 0)
+    {     
+      // Lê o comando até que o timeout padrão (to do) seja esgotado 
+      String command = Serial.readString();  
+      processCommand(command);
+      //delay(2000);
+    }
+        
 }
 
 // Função responsável por processar comandos
@@ -94,6 +105,19 @@ void processCommand(String command)
       ldrValue = ldrGetValue();
       Serial.printf("RES GET_LDR %d\r\n", ldrValue);  
     }
+
+    // Checa se o comando GET_TEMP foi recebido na serial
+    else if (driver_command == "GET_TEMP")
+    {
+      float tempValue = tempGetValue();
+      Serial.printf("RES GET_TEMP %.2f\r\n", tempValue);  
+    }
+    // Checa se o comando GET_TEMP foi recebido na serial
+    else if (driver_command == "GET_HUM")
+    {
+      float humiValue = humiGetValue();
+      Serial.printf("RES GET_HUM %.2f\r\n", humiValue);  
+    }
     // Checa se o comando qualquer outro comando diferente dos pre-estabelecidos foi recebido na serial
     else
     {
@@ -108,7 +132,9 @@ void ledUpdate(int ledValue) {
 
     // Envio de valor normazliado para a porta correspondente
     analogWrite(ledPin, ledValueNormalized); //ledValueNormalized
-    delay(50);
+
+  delay(50);
+
 }
 
 // Função para ler o valor do LDR
@@ -120,6 +146,25 @@ int ldrGetValue() {
     // Normalização do valor do sensor LDR para a faixa de 0 a 100
     int ldrNormalizedValue = map(value, 0, 4045, 0, 100);
     return ldrNormalizedValue;
+}
+
+
+// Função para ler o valor do DHT Temperatura
+float tempGetValue() {
+    // Leitura do sensor DHT Temperatura
+    float temp = dht.readTemperature();
+    //Serial.printf("TEMP sensor value: %.2f\n", temp);
+    return temp;
+}
+
+// Função para ler o valor do DHT Humidity
+float humiGetValue() {
+    // Leitura do sensor DHT Humidity
+   
+    float humi = dht.readHumidity(); 
+    //Serial.printf("HUMI sensor value: %d\n", humi);
+
+    return humi;
 }
 
 // Função responsável por calibrar o valor máximo do LDR
@@ -134,4 +179,5 @@ void calibrate_ldrMax()
     Serial.printf("LDR sensor value: %d\n", value);
     delay(500);
   }
+
 }
