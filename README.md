@@ -26,7 +26,7 @@ Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este pr
 <img src="https://github.com/user-attachments/assets/c65d095c-7b32-48a2-90f1-0053934c7da2" width="180" >
 <img src="https://github.com/user-attachments/assets/5a5fa6a2-f8dc-47b5-bf17-df98449addf0" width="180" >
 <img src="https://github.com/user-attachments/assets/d197148a-0e62-4c30-94b5-e6261f90ae71" width="180" >
-<img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
+<img src="https://github.com/user-attachments/assets/5d9a4c44-9c71-4542-9972-fa673815b108" width="180" >
 
 - **Nome do(a) Aluno(a) 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
 - **Nome do(a) Aluno(a) 02:** Desenvolvedor do Firmware
