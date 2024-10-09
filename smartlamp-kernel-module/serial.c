@@ -9,7 +9,7 @@ MODULE_LICENSE("GPL");
 
 #define MAX_RECV_LINE 100 // Tamanho máximo de uma linha de resposta do dispositvo USB
 
-
+static char recv_line[MAX_RECV_LINE];              // Armazena dados vindos da USB até receber um caractere de nova linha '\n'
 static struct usb_device *smartlamp_device;        // Referência para o dispositivo USB
 static uint usb_in, usb_out;                       // Endereços das portas de entrada e saida da USB
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
@@ -65,7 +65,6 @@ static void usb_disconnect(struct usb_interface *interface) {
     kfree(usb_out_buffer);
 }
 
-static int usb_read_serial(void) {
     int ret, actual_size;
     int retries = 10;                       // Tenta várias vezes antes de desistir
     char usb_in_buffer[MAX_RECV_LINE];     // Buffer para armazenar a resposta do dispositivo
@@ -81,23 +80,32 @@ static int usb_read_serial(void) {
             retries--;
             continue;
         }
-          // Imprime o conteúdo do buffer
-             printk(KERN_INFO "SmartLamp: Dados recebidos da USB (tentativa %d): %s\n", retries, usb_in_buffer);
 
-        //// Verifica se recebeu uma mensagem no formato 'RES GET_LDR X'
-        usb_in_buffer[actual_size] = '\0'; // Certifica-se de que a string está terminada com NULL
-        pos = strstr(usb_in_buffer, "RES GET_LDR "); //Procura a substring "RES GET_LDR " na string lida.
-        if (pos) {
-            // Extraí o valor de X, que está logo após "RES GET_LDR "
-            if (sscanf(pos + strlen("RES GET_LDR "), "%d", &ldr_value) == 1) {
-                return ldr_value; // Retorna o valor de X como inteiro
-            } else {
-                printk(KERN_ERR "SmartLamp: Falha ao interpretar o valor LDR\n");
-                return -1;
+        //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
+        //retorne o valor de X em inteiro
+
+        for(i=0; i< actual_size; i++){
+            // printk(KERN_INFO "usb_in_buffer[%d] = %c\n", i, usb_in_buffer[i]);
+
+            if(usb_in_buffer[i] == '\n') {
+                // recv_line[count] = '\0';
+                printk(KERN_INFO "SmartLamp: Recebido uma linha: '%s'\n", recv_line);
+                printk(KERN_INFO "fim de linha\n");
+
+                if(sscanf(recv_line, "%*s %*s %d", &ret) == 1) return ret;
+                else return 0;
+
             }
+            else{
+                recv_line[count] = usb_in_buffer[i];
+                printk(KERN_INFO "SmartLamp: Recebido uma linha: '%s'\n", recv_line);
+                count ++;
+            }
+
         }
+
     }
 
-    printk(KERN_ERR "SmartLamp: Não foi possível obter resposta da USB\n");
-    return -1;  // Retorna -1 em caso de erro
+    return -1; 
+
 }

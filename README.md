@@ -28,11 +28,12 @@ Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este pr
 <img src="https://github.com/user-attachments/assets/d197148a-0e62-4c30-94b5-e6261f90ae71" width="180" >
 <img src="https://github.com/user-attachments/assets/5d9a4c44-9c71-4542-9972-fa673815b108" width="180" >
 
-- **Nome do(a) Aluno(a) 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
-- **Nome do(a) Aluno(a) 02:** Desenvolvedor do Firmware
-- **Nome do(a) Aluno(a) 03:** Desenvolvedor do Driver Linux
-- **Nome do(a) Aluno(a) 04:** Desenvolvedor do Firmware
-- **Nome do(a) Aluno(a) 05:** Desenvolvedor do Firmware e Escritor da Documentação
+
+- **Mateus Pantoja 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
+- **Lahis Almeida 02:** Desenvolvedor do Firmware
+- **Nelson Villarreal 03:** Desenvolvedor do Driver Linux
+- **Wanderson Lima Ferreira 04:** Desenvolvedor do Driver Linux
+- **Itala Menezes 05:** Desenvolvedor do Firmware e Escritor da Documentação
 
 ## Introdução
 
@@ -146,5 +147,3 @@ Depois que o driver e o firmware estiverem configurados, você poderá interagir
 ## Contato
 
 Para perguntas, sugestões ou feedback, entre em contato com o mantenedor do projeto em [maintainer@example.com](mailto:maintainer@example.com).
-
-Teste

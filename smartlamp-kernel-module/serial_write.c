@@ -1,6 +1,10 @@
 #include <linux/module.h>
 #include <linux/usb.h>
 #include <linux/slab.h>
+#include <linux/delay.h>  // Para msleep e ssleep
+
+
+
 
 MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
 MODULE_DESCRIPTION("Driver de acesso ao SmartLamp (ESP32 com Chip Serial CP2102");
@@ -15,13 +19,14 @@ static uint usb_in, usb_out;                       // Endereços das portas de e
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-#define VENDOR_ID   SUBSTITUA_PELO_VENDORID /* Encontre o VendorID  do smartlamp */
-#define PRODUCT_ID  SUBSTITUA_PELO_PRODUCTID /* Encontre o ProductID do smartlamp */
+#define VENDOR_ID   0x10c4 /* Encontre o VendorID  do smartlamp */
+#define PRODUCT_ID  0xea60 /* Encontre o ProductID do smartlamp */
 static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
 static void usb_disconnect(struct usb_interface *ifce);                           // Executado quando o dispositivo USB é desconectado da USB
-static int  usb_read_serial(void);                                                   // Executado para ler a saida da porta serial
+static int  usb_read_serial(void);  
+static int  usb_write_serial(char *cmd, int param);                                                   
 
 MODULE_DEVICE_TABLE(usb, id_table);
 bool ignore = true;
@@ -51,10 +56,13 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     usb_in_buffer = kmalloc(usb_max_size, GFP_KERNEL);
     usb_out_buffer = kmalloc(usb_max_size, GFP_KERNEL);
 
-
-    usb_write_serial(COMANDO_SMARTLAMP, VALOR);
+    ssleep(1);
+    usb_write_serial("SET_LED", 100);
 
     printk("LDR Value: %d\n", LDR_value);
+
+    ssleep(2);
+    usb_write_serial("SET_LED", 0);
 
     return 0;
 }
@@ -72,7 +80,14 @@ static int usb_write_serial(char *cmd, int param) {
     
     // use a variavel usb_out_buffer para armazernar o comando em formato de texto que o firmware reconheça
 
+    // Concatena a string (cmd) e o número (param)
+    //usb_out_buffer =  "SET_LED 0\n";
+    snprintf(usb_out_buffer, usb_max_size, "%s %d\r\n", cmd, param);
+    
     // Grave o valor de usb_out_buffer com printk
+    // printk(KERN_INFO "SmartLamp: Dispositivo desconectado.\n");
+    printk("Command: %s\n", usb_out_buffer);
+   
 
     // Envie o comando pela porta Serial
     ret = usb_bulk_msg(smartlamp_device, usb_sndbulkpipe(smartlamp_device, usb_out), usb_out_buffer, strlen(usb_out_buffer), &actual_size, 1000*HZ);
@@ -83,7 +98,10 @@ static int usb_write_serial(char *cmd, int param) {
 
     // Use essa variavel para fazer a integração com a função usb_read_serial
     // resp_expected deve conter a resposta esperada do comando enviado e deve ser comparada com a resposta recebida
+    
     sprintf(resp_expected, "RES %s", cmd);
 
+    // free(usb_out_buffer);
+    
     return -1; 
 }
