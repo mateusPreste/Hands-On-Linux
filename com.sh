@@ -12,6 +12,12 @@ case $comando in
     "get_ldr")
         cat /sys/kernel/smartlamp/ldr
         ;;
+    "get_temp")
+        cat /sys/kernel/smartlamp/temp
+        ;;
+    "get_hum")
+        cat /sys/kernel/smartlamp/hum
+        ;;
     "set_led")
         if [ -n "$argumento" ]; then
             echo $argumento | sudo tee /sys/kernel/smartlamp/led 
