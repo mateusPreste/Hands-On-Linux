@@ -1,4 +1,5 @@
 obj-m += smartlamp.o
+
 PWD := $(CURDIR)
 
 all:
