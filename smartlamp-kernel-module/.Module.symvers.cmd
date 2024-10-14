@@ -1,0 +1,1 @@
+cmd_/home/pantoja/devtitans/Hands-On-Linux/smartlamp-kernel-module/Module.symvers :=  scripts/mod/modpost -m -a     -o /home/pantoja/devtitans/Hands-On-Linux/smartlamp-kernel-module/Module.symvers -T /home/pantoja/devtitans/Hands-On-Linux/smartlamp-kernel-module/modules.order -i Module.symvers -e 
