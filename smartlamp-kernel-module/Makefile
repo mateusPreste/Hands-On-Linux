@@ -1,4 +1,4 @@
-obj-m += SUBISTITUA_PELO_NOME_DO_MODULO.o
+obj-m +=  serial_write.o
 PWD := $(CURDIR)
 
 all:
