@@ -11,6 +11,8 @@ void setup() {
     pinMode(ledPin, OUTPUT);
     pinMode(ldrPin, INPUT);
     Serial.printf("SmartLamp Initialized.\n");
+
+   processCommand("GET_LDR");
 }
 
 // Função loop será executada infinitamente pelo ESP32
@@ -18,14 +20,14 @@ void loop() {
   if (Serial.available() > 0) {
     String command = Serial.readStringUntil('\n');
     processCommand(command);
-  } 
+  }    
 }
 
 void processCommand(String command) {
     if (command.startsWith("SET_LED")) {
         int value = command.substring(8).toInt(); //Pega o valor para  representar a intensidade de luminosidade do led 
         if (value >= 0 && value <= 100) {
-            ledValue = value; //Normaliza o valor da  intensidade do led entre 0 e 255 
+            ledValue = map(value, 0, 100, 0, 255); //Normaliza o valor da  intensidade do led entre 0 e 255 
             //Serial.print("Valor normalizado: ");
             //Serial.println(ledValue);
             ledUpdate();
@@ -35,7 +37,7 @@ void processCommand(String command) {
         }
     } else if (command.startsWith("GET_LED")) {
         Serial.print("RES GET_LED ");
-        Serial.println(ledValue);
+        Serial.println(map(ledValue, 0, 255, 0, 100));
     } else if (command.startsWith("GET_LDR")) {
         Serial.print("RES GET_LDR ");
         int ldrValue = ldrGetValue();
@@ -47,7 +49,7 @@ void processCommand(String command) {
 
 // Função para atualizar o valor do LED
 void ledUpdate() {
-    analogWrite(ledPin, map(ledValue,0,100,0,255));
+    analogWrite(ledPin, ledValue);
 }
 
 // Função para ler o valor do LDR
