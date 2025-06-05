@@ -67,7 +67,8 @@ static void usb_disconnect(struct usb_interface *interface) {
 
 static int usb_read_serial() {
     int ret, actual_size;
-    int retries = 10;                       // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
+    int retries = 10; // Tenta algumas vezes receber uma resposta da USB. Depois desiste.
+    const char *prefix = "RES GET_LDR "; // Prefixo esperado na resposta do dispositivo
 
     // Espera pela resposta correta do dispositivo (desiste depois de várias tentativas)
     while (retries > 0) {
@@ -76,8 +77,29 @@ static int usb_read_serial() {
             // actual_size - contem o tamanho da resposta em bytes
         ret = usb_bulk_msg(smartlamp_device, usb_rcvbulkpipe(smartlamp_device, usb_in), usb_in_buffer, min(usb_max_size, MAX_RECV_LINE), &actual_size, 1000);
         if (ret) {
+            retries--;
             printk(KERN_ERR "SmartLamp: Erro ao ler dados da USB (tentativa %d). Codigo: %d\n", ret, retries--);
             continue;
+        }
+
+        if( actual_size>0){
+            usb_in_buffer[actual_size] = '\0'; 
+            printk(KERN_INFO "SmartLamp: Dados recebidos: %s\n", usb_in_buffer);
+
+            if (strncmp(usb_in_buffer, prefix, strlen(prefix)) == 0) {
+
+                if (sscanf(usb_in_buffer + strlen(prefix), "%d", &value) == 1) {
+                    printk(KERN_INFO "SmartLamp: Valor LDR extraído: %d\n", value);
+                    return value; // Retorna o valor X como inteiro
+                }
+            }
+            else { // linha para debug
+                printk(KERN_ERR "SmartLamp: Resposta inesperada: %s\n", usb_in_buffer);
+            }
+
+            retries--;
+            mssleep(20); 
+            
         }
 
         //caso tenha recebido a mensagem 'RES_LDR X' via serial acesse o buffer 'usb_in_buffer' e retorne apenas o valor da resposta X
