@@ -1,0 +1,108 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/pantoja/devtitans/Hands-On-Linux/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+LDR_value	smartlamp-kernel-module/serial.c	/^int LDR_value = 0;$/;"	v	typeref:typename:int
+LDR_value	smartlamp-kernel-module/serial_write.c	/^int LDR_value = 0;$/;"	v	typeref:typename:int
+LDR_value	smartlamp-kernel-module/smartlamp.c	/^int LDR_value = 0;$/;"	v	typeref:typename:int
+LDR_value	smartlamp-kernel-module/sysfs.c	/^int LDR_value = 0;$/;"	v	typeref:typename:int
+MAX_RECV_LINE	smartlamp-kernel-module/probe.c	/^#define MAX_RECV_LINE /;"	d	file:
+MAX_RECV_LINE	smartlamp-kernel-module/serial.c	/^#define MAX_RECV_LINE /;"	d	file:
+MAX_RECV_LINE	smartlamp-kernel-module/serial_write.c	/^#define MAX_RECV_LINE /;"	d	file:
+MAX_RECV_LINE	smartlamp-kernel-module/smartlamp.c	/^#define MAX_RECV_LINE /;"	d	file:
+MAX_RECV_LINE	smartlamp-kernel-module/sysfs.c	/^#define MAX_RECV_LINE /;"	d	file:
+PRODUCT_ID	smartlamp-kernel-module/probe.c	/^#define PRODUCT_ID /;"	d	file:
+PRODUCT_ID	smartlamp-kernel-module/serial.c	/^#define PRODUCT_ID /;"	d	file:
+PRODUCT_ID	smartlamp-kernel-module/serial_write.c	/^#define PRODUCT_ID /;"	d	file:
+PRODUCT_ID	smartlamp-kernel-module/smartlamp.c	/^#define PRODUCT_ID /;"	d	file:
+PRODUCT_ID	smartlamp-kernel-module/sysfs.c	/^#define PRODUCT_ID /;"	d	file:
+PWD	smartlamp-kernel-module/Makefile	/^PWD := $(CURDIR)$/;"	m
+VENDOR_ID	smartlamp-kernel-module/probe.c	/^#define VENDOR_ID /;"	d	file:
+VENDOR_ID	smartlamp-kernel-module/serial.c	/^#define VENDOR_ID /;"	d	file:
+VENDOR_ID	smartlamp-kernel-module/serial_write.c	/^#define VENDOR_ID /;"	d	file:
+VENDOR_ID	smartlamp-kernel-module/smartlamp.c	/^#define VENDOR_ID /;"	d	file:
+VENDOR_ID	smartlamp-kernel-module/sysfs.c	/^#define VENDOR_ID /;"	d	file:
+all	smartlamp-kernel-module/Makefile	/^all:$/;"	t
+attr_group	smartlamp-kernel-module/smartlamp.c	/^static struct attribute_group attr_group    = { .attrs = attrs };$/;"	v	typeref:struct:attribute_group	file:
+attr_group	smartlamp-kernel-module/sysfs.c	/^static struct attribute_group attr_group    = { .attrs = attrs };$/;"	v	typeref:struct:attribute_group	file:
+attr_show	smartlamp-kernel-module/smartlamp.c	/^static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff) {$/;"	f	typeref:typename:ssize_t	file:
+attr_show	smartlamp-kernel-module/sysfs.c	/^static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff) {$/;"	f	typeref:typename:ssize_t	file:
+attr_store	smartlamp-kernel-module/smartlamp.c	/^static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff/;"	f	typeref:typename:ssize_t	file:
+attr_store	smartlamp-kernel-module/sysfs.c	/^static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff/;"	f	typeref:typename:ssize_t	file:
+attrs	smartlamp-kernel-module/smartlamp.c	/^static struct attribute      *attrs[]       = { &led_attribute.attr, &ldr_attribute.attr, NULL }/;"	v	typeref:struct:attribute * []	file:
+attrs	smartlamp-kernel-module/sysfs.c	/^static struct attribute      *attrs[]       = { &led_attribute.attr, &ldr_attribute.attr, NULL }/;"	v	typeref:struct:attribute * []	file:
+clean	smartlamp-kernel-module/Makefile	/^clean:$/;"	t
+id_table	smartlamp-kernel-module/probe.c	/^static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };$/;"	v	typeref:typename:const struct usb_device_id[]	file:
+id_table	smartlamp-kernel-module/serial.c	/^static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };$/;"	v	typeref:typename:const struct usb_device_id[]	file:
+id_table	smartlamp-kernel-module/serial_write.c	/^static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };$/;"	v	typeref:typename:const struct usb_device_id[]	file:
+id_table	smartlamp-kernel-module/smartlamp.c	/^static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };$/;"	v	typeref:typename:const struct usb_device_id[]	file:
+id_table	smartlamp-kernel-module/sysfs.c	/^static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };$/;"	v	typeref:typename:const struct usb_device_id[]	file:
+ignore	smartlamp-kernel-module/probe.c	/^bool ignore = true;$/;"	v	typeref:typename:bool
+ignore	smartlamp-kernel-module/serial.c	/^bool ignore = true;$/;"	v	typeref:typename:bool
+ignore	smartlamp-kernel-module/serial_write.c	/^bool ignore = true;$/;"	v	typeref:typename:bool
+ignore	smartlamp-kernel-module/smartlamp.c	/^bool ignore = true;$/;"	v	typeref:typename:bool
+ignore	smartlamp-kernel-module/sysfs.c	/^bool ignore = true;$/;"	v	typeref:typename:bool
+ldr_attribute	smartlamp-kernel-module/smartlamp.c	/^static struct kobj_attribute  ldr_attribute = __ATTR(ldr, S_IRUGO | S_IWUSR, attr_show, attr_sto/;"	v	typeref:struct:kobj_attribute	file:
+ldr_attribute	smartlamp-kernel-module/sysfs.c	/^static struct kobj_attribute  ldr_attribute = __ATTR(ldr, S_IRUGO | S_IWUSR, attr_show, attr_sto/;"	v	typeref:struct:kobj_attribute	file:
+led_attribute	smartlamp-kernel-module/smartlamp.c	/^static struct kobj_attribute  led_attribute = __ATTR(led, S_IRUGO | S_IWUSR, attr_show, attr_sto/;"	v	typeref:struct:kobj_attribute	file:
+led_attribute	smartlamp-kernel-module/sysfs.c	/^static struct kobj_attribute  led_attribute = __ATTR(led, S_IRUGO | S_IWUSR, attr_show, attr_sto/;"	v	typeref:struct:kobj_attribute	file:
+recv_line	smartlamp-kernel-module/serial.c	/^static char recv_line[MAX_RECV_LINE];              \/\/ Armazena dados vindos da USB até recebe/;"	v	typeref:typename:char[]	file:
+recv_line	smartlamp-kernel-module/smartlamp.c	/^static char recv_line[MAX_RECV_LINE];              \/\/ Armazena dados vindos da USB até recebe/;"	v	typeref:typename:char[]	file:
+smartlamp_device	smartlamp-kernel-module/probe.c	/^static struct usb_device *smartlamp_device;        \/\/ Referência para o dispositivo USB$/;"	v	typeref:struct:usb_device *	file:
+smartlamp_device	smartlamp-kernel-module/serial.c	/^static struct usb_device *smartlamp_device;        \/\/ Referência para o dispositivo USB$/;"	v	typeref:struct:usb_device *	file:
+smartlamp_device	smartlamp-kernel-module/serial_write.c	/^static struct usb_device *smartlamp_device;        \/\/ Referência para o dispositivo USB$/;"	v	typeref:struct:usb_device *	file:
+smartlamp_device	smartlamp-kernel-module/smartlamp.c	/^static struct usb_device *smartlamp_device;        \/\/ Referência para o dispositivo USB$/;"	v	typeref:struct:usb_device *	file:
+smartlamp_device	smartlamp-kernel-module/sysfs.c	/^static struct usb_device *smartlamp_device;        \/\/ Referência para o dispositivo USB$/;"	v	typeref:struct:usb_device *	file:
+smartlamp_driver	smartlamp-kernel-module/probe.c	/^static struct usb_driver smartlamp_driver = {$/;"	v	typeref:struct:usb_driver	file:
+smartlamp_driver	smartlamp-kernel-module/serial.c	/^static struct usb_driver smartlamp_driver = {$/;"	v	typeref:struct:usb_driver	file:
+smartlamp_driver	smartlamp-kernel-module/serial_write.c	/^static struct usb_driver smartlamp_driver = {$/;"	v	typeref:struct:usb_driver	file:
+smartlamp_driver	smartlamp-kernel-module/smartlamp.c	/^static struct usb_driver smartlamp_driver = {$/;"	v	typeref:struct:usb_driver	file:
+smartlamp_driver	smartlamp-kernel-module/sysfs.c	/^static struct usb_driver smartlamp_driver = {$/;"	v	typeref:struct:usb_driver	file:
+sys_obj	smartlamp-kernel-module/smartlamp.c	/^static struct kobject        *sys_obj;                                             \/\/ Executad/;"	v	typeref:struct:kobject *	file:
+sys_obj	smartlamp-kernel-module/sysfs.c	/^static struct kobject        *sys_obj;                                             \/\/ Executad/;"	v	typeref:struct:kobject *	file:
+usb_disconnect	smartlamp-kernel-module/probe.c	/^static void usb_disconnect(struct usb_interface *interface) {$/;"	f	typeref:typename:void	file:
+usb_disconnect	smartlamp-kernel-module/serial.c	/^static void usb_disconnect(struct usb_interface *interface) {$/;"	f	typeref:typename:void	file:
+usb_disconnect	smartlamp-kernel-module/serial_write.c	/^static void usb_disconnect(struct usb_interface *interface) {$/;"	f	typeref:typename:void	file:
+usb_disconnect	smartlamp-kernel-module/smartlamp.c	/^static void usb_disconnect(struct usb_interface *interface) {$/;"	f	typeref:typename:void	file:
+usb_disconnect	smartlamp-kernel-module/sysfs.c	/^static void usb_disconnect(struct usb_interface *interface) {$/;"	f	typeref:typename:void	file:
+usb_in	smartlamp-kernel-module/probe.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_in	smartlamp-kernel-module/serial.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_in	smartlamp-kernel-module/serial_write.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_in	smartlamp-kernel-module/smartlamp.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_in	smartlamp-kernel-module/sysfs.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_in_buffer	smartlamp-kernel-module/probe.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_in_buffer	smartlamp-kernel-module/serial.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_in_buffer	smartlamp-kernel-module/serial_write.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_in_buffer	smartlamp-kernel-module/smartlamp.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_in_buffer	smartlamp-kernel-module/sysfs.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_max_size	smartlamp-kernel-module/probe.c	/^static int usb_max_size;                           \/\/ Tamanho máximo de uma mensagem USB$/;"	v	typeref:typename:int	file:
+usb_max_size	smartlamp-kernel-module/serial.c	/^static int usb_max_size;                           \/\/ Tamanho máximo de uma mensagem USB$/;"	v	typeref:typename:int	file:
+usb_max_size	smartlamp-kernel-module/serial_write.c	/^static int usb_max_size;                           \/\/ Tamanho máximo de uma mensagem USB$/;"	v	typeref:typename:int	file:
+usb_max_size	smartlamp-kernel-module/smartlamp.c	/^static int usb_max_size;                           \/\/ Tamanho máximo de uma mensagem USB$/;"	v	typeref:typename:int	file:
+usb_max_size	smartlamp-kernel-module/sysfs.c	/^static int usb_max_size;                           \/\/ Tamanho máximo de uma mensagem USB$/;"	v	typeref:typename:int	file:
+usb_out	smartlamp-kernel-module/probe.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_out	smartlamp-kernel-module/serial.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_out	smartlamp-kernel-module/serial_write.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_out	smartlamp-kernel-module/smartlamp.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_out	smartlamp-kernel-module/sysfs.c	/^static uint usb_in, usb_out;                       \/\/ Endereços das portas de entrada e saida/;"	v	typeref:typename:uint	file:
+usb_out_buffer	smartlamp-kernel-module/probe.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_out_buffer	smartlamp-kernel-module/serial.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_out_buffer	smartlamp-kernel-module/serial_write.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_out_buffer	smartlamp-kernel-module/smartlamp.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_out_buffer	smartlamp-kernel-module/sysfs.c	/^static char *usb_in_buffer, *usb_out_buffer;       \/\/ Buffers de entrada e saída da USB$/;"	v	typeref:typename:char *	file:
+usb_probe	smartlamp-kernel-module/probe.c	/^static int usb_probe(struct usb_interface *interface, const struct usb_device_id *id) {$/;"	f	typeref:typename:int	file:
+usb_probe	smartlamp-kernel-module/serial.c	/^static int usb_probe(struct usb_interface *interface, const struct usb_device_id *id) {$/;"	f	typeref:typename:int	file:
+usb_probe	smartlamp-kernel-module/serial_write.c	/^static int usb_probe(struct usb_interface *interface, const struct usb_device_id *id) {$/;"	f	typeref:typename:int	file:
+usb_probe	smartlamp-kernel-module/smartlamp.c	/^static int usb_probe(struct usb_interface *interface, const struct usb_device_id *id) {$/;"	f	typeref:typename:int	file:
+usb_probe	smartlamp-kernel-module/sysfs.c	/^static int usb_probe(struct usb_interface *interface, const struct usb_device_id *id) {$/;"	f	typeref:typename:int	file:
+usb_read_serial	smartlamp-kernel-module/serial.c	/^static int usb_read_serial() {$/;"	f	typeref:typename:int	file:
+usb_read_serial	smartlamp-kernel-module/sysfs.c	/^static int usb_read_serial() {$/;"	f	typeref:typename:int	file:
+usb_send_cmd	smartlamp-kernel-module/smartlamp.c	/^static int usb_send_cmd(char *cmd, int param) {$/;"	f	typeref:typename:int	file:
+usb_write_serial	smartlamp-kernel-module/serial_write.c	/^static int usb_write_serial(char *cmd, int param) {$/;"	f	typeref:typename:int	file:
