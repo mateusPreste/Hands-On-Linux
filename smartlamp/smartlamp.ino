@@ -1,13 +1,19 @@
-#define baudrate 115200
-// Defina os pinos de LED e LDR
-// Defina uma variável com valor máximo do LDR (4000)
-// Defina uma variável para guardar o valor atual do LED (10)
-const int ledPin = 22;
-int ledValue = 10;
+#include <Arduino.h>
+#include <DHTesp.h>
 
-const int ldrPin = 36;
-// Faça testes no sensor ldr para encontrar o valor maximo e atribua a variável ldrMax
+// BAUDRATE
+#define baudrate 115200
+
+// Defina os pinos de LED e LDR e DHT
+#define DHT_PIN 12
+#define LED_PIN 22
+#define LDR_PIN 36
+
+// Defina uma variável com valor máximo do LDR (4000)
 int ldrMax = 4095;
+
+// Defina uma variável para guardar o valor atual do LED (10)
+int ledValue = 10;
 
 //Configurando PWM
 const int pwmFreq = 5000;
@@ -15,14 +21,18 @@ const int pwmChannel = 0;
 const int pwmResolution = 8;
 int brightness = 0;
 
+// Objeto para manipular sensor DHT
+DHTesp dht;
+
 void setup() {
     Serial.begin(baudrate);
-    pinMode(ledPin, OUTPUT);
-    pinMode(ldrPin, INPUT);
+    pinMode(LED_PIN, OUTPUT);
+    pinMode(LDR_PIN, INPUT);
     ledcSetup(pwmChannel, pwmFreq, pwmResolution);
-    ledcAttachPin(ledPin, pwmChannel);
+    ledcAttachPin(LED_PIN, pwmChannel);
     ledcWrite(pwmChannel, 0);
     analogReadResolution(12);
+    dht.setup(DHT_PIN, DHTesp::DHT22);
     Serial.printf("SmartLamp Initialized.\n");
 }
 
@@ -57,6 +67,14 @@ void processCommand(String command) {
       int ldrValue = ldrGetValue();
       Serial.print("RES GET_LDR ");
       Serial.println(ldrValue);
+    } else if(command.startsWith("GET_TEMP")) {
+      float temp = dht.getTemperature();
+      Serial.print("RES GET_TEMP ");
+      Serial.println(temp);
+    } else if(command.startsWith("GET_HUM")) { 
+      float hum = dht.getHumidity();
+      Serial.print("RES GET_HUM ");
+      Serial.println(hum);
     } else {
       Serial.println("ERR Unknown command");
     }
@@ -75,7 +93,7 @@ int ldrGetValue() {
     // Leia o sensor LDR e retorne o valor normalizado entre 0 e 100
     // faça testes para encontrar o valor maximo do ldr (exemplo: aponte a lanterna do celular para o sensor)       
     // Atribua o valor para a variável ldrMax e utilize esse valor para a normalização
-  int raw = analogRead(ldrPin);
+  int raw = analogRead(LDR_PIN);
   int normalized = map(raw, 0, ldrMax, 0, 100);
   return constrain(normalized, 0, 100);
 }
