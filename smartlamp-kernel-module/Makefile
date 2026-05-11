@@ -1,4 +1,12 @@
-obj-m += SUBISTITUA_PELO_NOME_DO_MODULO.o
+# Altere esta linha para o arquivo da task que voce quer compilar.
+#
+# Exemplos:
+#   Tarefa 2.1: obj-m += probe_2025.o
+#   Tarefa 2.2: obj-m += serial_write_2025.o
+#   Tarefa 2.3: obj-m += serial_read_2025.o
+#   Tarefa 2.4: obj-m += sysfs_2025.o
+#   Tarefa 3.1: obj-m += test_driver.o
+obj-m += ALTERE_PARA_O_ARQUIVO_DA_TASK.o
 PWD := $(CURDIR)
 
 all:
