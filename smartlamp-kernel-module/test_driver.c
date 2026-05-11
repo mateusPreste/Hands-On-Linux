@@ -1,52 +1,82 @@
+#include <linux/kobject.h>
 #include <linux/module.h>
-#include <linux/usb.h>
-#include <linux/random.h>
+#include <linux/string.h>
+#include <linux/sysfs.h>
 
 MODULE_AUTHOR("DevTITANS <devtitans@icomp.ufam.edu.br>");
-MODULE_DESCRIPTION("Driver SmartLamp com sysfs e valores aleatórios");
+MODULE_DESCRIPTION("Mock sysfs do SmartLamp para testar o daemon de brilho");
 MODULE_LICENSE("GPL");
 
-static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id);
-static void usb_disconnect(struct usb_interface *ifce);
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff);
 static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff, size_t count);
 
-// Arquivos criados em /sys/kernel/smartlamp/{led, ldr}
-static struct kobj_attribute  led_attribute = __ATTR(led, S_IRUGO | S_IWUSR, attr_show, attr_store);
-static struct kobj_attribute  ldr_attribute = __ATTR(ldr, S_IRUGO | S_IWUSR, attr_show, attr_store);
-static struct attribute      *attrs[]       = { &led_attribute.attr, &ldr_attribute.attr, NULL };
-static struct attribute_group attr_group    = { .attrs = attrs };
-static struct kobject        *sys_obj;
+static struct kobj_attribute led_attribute = __ATTR(led, 0664, attr_show, attr_store);
+static struct kobj_attribute ldr_attribute = __ATTR(ldr, 0664, attr_show, attr_store);
+static struct kobj_attribute threshold_attribute = __ATTR(threshold, 0664, attr_show, attr_store);
 
-// CP2102, chip USB-Serial usado pelo ESP32.
-#define VENDOR_ID  0x10C4
-#define PRODUCT_ID 0xEA60
-
-static const struct usb_device_id id_table[] = {
-    { USB_DEVICE(VENDOR_ID, PRODUCT_ID) },
-    {}
-};
-MODULE_DEVICE_TABLE(usb, id_table);
-
-static struct usb_driver smartlamp_driver = {
-    .name       = "smartlamp_random",
-    .probe      = usb_probe,
-    .disconnect = usb_disconnect,
-    .id_table   = id_table,
+static struct attribute *attrs[] = {
+    &led_attribute.attr,
+    &ldr_attribute.attr,
+    &threshold_attribute.attr,
+    NULL,
 };
 
-module_usb_driver(smartlamp_driver);
+static struct attribute_group attr_group = {
+    .attrs = attrs,
+};
 
-static int smartlamp_random_value(void)
+static struct kobject *sys_obj;
+static int mock_led __maybe_unused;
+static int mock_ldr __maybe_unused = 50;
+static int mock_threshold __maybe_unused = 50;
+
+static int clamp_percent(long value)
 {
-    return get_random_u32_below(101);
+    if (value < 0)
+        return 0;
+    if (value > 100)
+        return 100;
+    return value;
 }
 
-static int usb_probe(struct usb_interface *interface, const struct usb_device_id *id)
+static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff)
 {
+    const char *attr_name = attr->attr.name;
+    int value = 0;
+
+    (void)sys_obj;
+    (void)attr_name;
+
+    // TASK 3.1: retorne o valor correto para led, ldr ou threshold.
+    // Use attr_name para descobrir qual arquivo foi lido.
+
+    return sprintf(buff, "%d\n", value);
+}
+
+static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff, size_t count)
+{
+    const char *attr_name = attr->attr.name;
+    long value;
     int ret;
 
-    printk(KERN_INFO "SmartLamp Random: Dispositivo conectado.\n");
+    (void)sys_obj;
+
+    ret = kstrtol(buff, 10, &value);
+    if (ret)
+        return ret;
+
+    value = clamp_percent(value);
+    (void)attr_name;
+
+    // TASK 3.1: atualize mock_led, mock_ldr ou mock_threshold conforme attr_name.
+    // Diferente do driver real, neste mock o ldr pode receber escrita para simular luz.
+
+    return count;
+}
+
+static int __init smartlamp_mock_init(void)
+{
+    int ret;
 
     sys_obj = kobject_create_and_add("smartlamp", kernel_kobj);
     if (!sys_obj)
@@ -54,51 +84,25 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
 
     ret = sysfs_create_group(sys_obj, &attr_group);
     if (ret) {
-        printk(KERN_ERR "SmartLamp Random: Erro ao criar arquivos no sysfs.\n");
         kobject_put(sys_obj);
         sys_obj = NULL;
         return ret;
     }
 
+    pr_info("SmartLamp mock: arquivos criados em /sys/kernel/smartlamp\n");
     return 0;
 }
 
-static void usb_disconnect(struct usb_interface *interface)
+static void __exit smartlamp_mock_exit(void)
 {
-    printk(KERN_INFO "SmartLamp Random: Dispositivo desconectado.\n");
-
     if (sys_obj) {
         sysfs_remove_group(sys_obj, &attr_group);
         kobject_put(sys_obj);
         sys_obj = NULL;
     }
+
+    pr_info("SmartLamp mock: modulo removido\n");
 }
 
-static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff)
-{
-    int value = smartlamp_random_value();
-
-    printk(KERN_INFO "SmartLamp Random: Lendo %s = %d\n", attr->attr.name, value);
-
-    return sprintf(buff, "%d\n", value);
-}
-
-static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff, size_t count)
-{
-    long value;
-    int ret;
-
-    if (strcmp(attr->attr.name, "led")) {
-        printk(KERN_ALERT "SmartLamp Random: o valor do ldr eh apenas para leitura.\n");
-        return -EACCES;
-    }
-
-    ret = kstrtol(buff, 10, &value);
-    if (ret || value < 0 || value > 100) {
-        printk(KERN_ALERT "SmartLamp Random: valor de led invalido.\n");
-        return -EINVAL;
-    }
-
-    printk(KERN_INFO "SmartLamp Random: Escrita em led recebida: %ld\n", value);
-    return count;
-}
+module_init(smartlamp_mock_init);
+module_exit(smartlamp_mock_exit);

@@ -1,4 +1,4 @@
-obj-m += SUBISTITUA_PELO_NOME_DO_MODULO.o
+obj-m += test_driver.o
 PWD := $(CURDIR)
 
 all:

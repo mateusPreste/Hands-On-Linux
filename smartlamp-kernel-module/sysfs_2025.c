@@ -23,19 +23,20 @@ static void usb_disconnect(struct usb_interface *ifce);                         
 static int  usb_write_serial(char *cmd, int param);                                // Executado para enviar um comando para o dispositivo
 static int  usb_read_serial(char *cmd);                                            // Executado para ler a resposta esperada da porta serial
 
-// Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é lido
+// Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr, threshold} é lido
 // Exemplo: cat /sys/kernel/smartlamp/led
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff);
 
-// Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é escrito
+// Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr, threshold} é escrito
 // Exemplo: echo "100" | sudo tee /sys/kernel/smartlamp/led
 static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff, size_t count);
 
-// Variáveis para criar os arquivos em /sys/kernel/smartlamp/{led, ldr}
-static struct kobj_attribute  led_attribute = __ATTR(led, S_IRUGO | S_IWUSR, attr_show, attr_store);
-static struct kobj_attribute  ldr_attribute = __ATTR(ldr, S_IRUGO | S_IWUSR, attr_show, attr_store);
-static struct attribute      *attrs[]       = { &led_attribute.attr, &ldr_attribute.attr, NULL };
-static struct attribute_group attr_group    = { .attrs = attrs };
+// Variáveis para criar os arquivos em /sys/kernel/smartlamp/{led, ldr, threshold}
+static struct kobj_attribute  led_attribute       = __ATTR(led, S_IRUGO | S_IWUSR, attr_show, attr_store);
+static struct kobj_attribute  ldr_attribute       = __ATTR(ldr, S_IRUGO | S_IWUSR, attr_show, attr_store);
+static struct kobj_attribute  threshold_attribute = __ATTR(threshold, S_IRUGO | S_IWUSR, attr_show, attr_store);
+static struct attribute      *attrs[]             = { &led_attribute.attr, &ldr_attribute.attr, &threshold_attribute.attr, NULL };
+static struct attribute_group attr_group          = { .attrs = attrs };
 static struct kobject        *sys_obj;
 
 // Função para configurar os parâmetros seriais do CP2102 via Control-Messages
@@ -112,7 +113,7 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
         return ret;
     }
 
-    // Cria os arquivos /sys/kernel/smartlamp/led e /sys/kernel/smartlamp/ldr
+    // Cria os arquivos /sys/kernel/smartlamp/led, /sys/kernel/smartlamp/ldr e /sys/kernel/smartlamp/threshold
     sys_obj = kobject_create_and_add("smartlamp", kernel_kobj);
     if (!sys_obj) {
         kfree(usb_in_buffer);
@@ -224,28 +225,43 @@ static int usb_read_serial(char *cmd) {
     return -1;
 }
 
-// Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é lido
+// Executado quando algum arquivo em /sys/kernel/smartlamp/{led, ldr, threshold} é lido.
+// Parâmetros:
+// - sys_obj: objeto do kernel que representa o diretório /sys/kernel/smartlamp.
+// - attr: atributo que representa o arquivo acessado (led, ldr ou threshold).
+// - buff: buffer onde a função deve escrever o texto que será retornado para o usuário.
+// Retorno: quantidade de bytes escritos em buff.
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff) {
     int value;
+    // attr_name guarda o nome do arquivo sysfs acessado.
+    // Exemplos: "led" quando o usuário roda cat /sys/kernel/smartlamp/led,
+    // "ldr" quando lê /sys/kernel/smartlamp/ldr e "threshold" para threshold.
     const char *attr_name = attr->attr.name;
 
     printk(KERN_INFO "SmartLamp: Lendo %s ...\n", attr_name);
 
-    if (!strcmp(attr_name, "led")) {
-        usb_write_serial("GET_LED", -1);
-        value = usb_read_serial("GET_LED");
-    } else {
-        usb_write_serial("GET_LDR", -1);
-        value = usb_read_serial("GET_LDR");
-    }
+    // TASK 2.4: implemente a leitura via sysfs.
+    // Use attr_name para identificar se o usuario leu led, ldr ou threshold.
+    // Para cada arquivo, envie o comando GET correspondente ao firmware
+    // e use usb_read_serial() para obter o valor que sera retornado em buff.
 
     sprintf(buff, "%d\n", value);
     return strlen(buff);
 }
 
-// Executado quando o arquivo /sys/kernel/smartlamp/{led, ldr} é escrito
+// Executado quando algum arquivo em /sys/kernel/smartlamp/{led, ldr, threshold} recebe escrita.
+// Exemplo: echo 100 | sudo tee /sys/kernel/smartlamp/led
+// Parâmetros:
+// - sys_obj: objeto do kernel que representa o diretório /sys/kernel/smartlamp.
+// - attr: atributo que representa o arquivo escrito (led, ldr ou threshold).
+// - buff: buffer com o texto enviado pelo usuário.
+// - count: quantidade de bytes recebidos em buff.
+// Retorno: quantidade de bytes processados ou código de erro negativo.
 static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff, size_t count) {
     long ret, value;
+    // attr_name guarda o nome do arquivo sysfs que recebeu a escrita.
+    // Use esse valor para decidir se o comando será SET_LED, SET_THRESHOLD
+    // ou se a operação deve ser recusada porque ldr é somente leitura.
     const char *attr_name = attr->attr.name;
 
     ret = kstrtol(buff, 10, &value);
@@ -256,15 +272,11 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
 
     printk(KERN_INFO "SmartLamp: Setando %s para %ld ...\n", attr_name, value);
 
-    if (!strcmp(attr_name, "led")) {
-        ret = usb_write_serial("SET_LED", value);
-        if (!ret)
-            ret = usb_read_serial("SET_LED");
-    }
-    else {
-        printk(KERN_ALERT "SmartLamp: o valor do ldr (sensor de luz) eh apenas para leitura.\n");
-        return -EACCES;
-    }
+    // TASK 2.4: implemente a escrita via sysfs.
+    // Use attr_name para permitir escrita em led e threshold.
+    // Para led, envie SET_LED com o valor recebido.
+    // Para threshold, envie SET_THRESHOLD com o valor recebido.
+    // O arquivo ldr representa o sensor de luz e deve ser somente leitura.
 
     if (ret < 0) {
         printk(KERN_ALERT "SmartLamp: erro ao setar o valor do %s.\n", attr_name);
