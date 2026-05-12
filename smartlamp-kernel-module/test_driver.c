@@ -89,6 +89,15 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
     value = clamp_percent(value);
     (void)attr_name;
 
+    if(strcmp(attr_name,"ldr")) {
+        mock_ldr = value;
+    }
+    if(strcmp(attr_name,"led")) {
+        mock_led = value;
+    }
+    if(strcmp(attr_name,"threshold")) {
+        mock_threshold = value;
+    }
     // TASK 3.1: esta funcao e chamada quando o usuario escreve em um arquivo.
     // Exemplo: echo 75 | sudo tee /sys/kernel/smartlamp/ldr
     //
