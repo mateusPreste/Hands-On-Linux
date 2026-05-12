@@ -27,7 +27,7 @@ Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este pr
 - **Nome do(a) Aluno(a) 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
 - **Nome do(a) Aluno(a) 02:** Desenvolvedor do Firmware
 - **Nome do(a) Aluno(a) 03:** Desenvolvedor do Driver Linux
-- **Nome do(a) Aluno(a) 04:** Desenvolvedor do Driver Linux
+- **Laura Nunes Belem:** Desenvolvedor do Driver Linux
 - **Derio Crisostomo Oliveira:** Desenvolvedor do Firmware e Escritor da Documentação
 
 ## Introdução
