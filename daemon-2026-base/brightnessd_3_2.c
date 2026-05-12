@@ -6,7 +6,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#define DEFAULT_LDR_PATH "/sys/kernel/smartlamp/ldr"
+//#define DEFAULT_LDR_PATH "/sys/kernel/smartlamp/ldr"
+#define DEFAULT_LDR_PATH "mock_sysfs/ldr_value"
 #define DEFAULT_INTERVAL_MS 1000
 #define MIN_PERCENT 10
 
