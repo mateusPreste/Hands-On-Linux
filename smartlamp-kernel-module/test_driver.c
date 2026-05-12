@@ -14,10 +14,6 @@ static struct kobj_attribute led_attribute = __ATTR(led, 0664, attr_show, attr_s
 static struct kobj_attribute ldr_attribute = __ATTR(ldr, 0664, attr_show, attr_store);
 static struct kobj_attribute threshold_attribute = __ATTR(threshold, 0664, attr_show, attr_store);
 
-static int mock_led = 0;
-static int mock_ldr = 0;
-static int mock_threshold = 0;
-
 static struct attribute *attrs[] = {
     &led_attribute.attr,
     &ldr_attribute.attr,
