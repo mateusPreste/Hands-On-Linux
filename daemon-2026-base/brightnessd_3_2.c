@@ -41,9 +41,19 @@ static int read_int_file(const char *path, int *value)
 
 static int ldr_to_percent(int ldr)
 {
-    // TASK 3.2: limite o LDR para 0-100 e aplique um brilho minimo.
-    (void)ldr;
-    return MIN_PERCENT;
+    int percent = 100 - (ldr * 100 / 4095);
+
+    if (percent < MIN_PERCENT)
+    {
+        percent = MIN_PERCENT;
+    }
+
+    if (percent > 100)
+    {
+        percent = 100;
+    }
+
+    return percent;
 }
 
 static void sleep_ms(int milliseconds)
