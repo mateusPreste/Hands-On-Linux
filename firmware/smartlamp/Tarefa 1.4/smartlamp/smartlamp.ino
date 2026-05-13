@@ -5,7 +5,6 @@
 int ledValue = 0;           // Intensidade (0-100)
 int thresholdValue = 50;    // Limiar de ativação (0-100)
 const int ldrMax = 4095;    // Valor maximo lido
-const int ldrMin = 1400;    // Valor minimo lido
 
 unsigned long previousMillis = 0; 
 const long interval = 2000; // Intervalo de 2 segundos
@@ -41,7 +40,7 @@ void loop()
   {
     previousMillis = currentMillis;
     
-    int currentLDR = ldrGetValue(); // Passo 5
+    int currentLDR = ldrGetValue();
     
     // Envio automático do valor do LDR normalizado
     Serial.print("RES GET_LDR ");
