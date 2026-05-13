@@ -33,6 +33,19 @@ static int read_int_file(const char *path, int *value)
     // Retorne 0 em caso de sucesso ou um codigo negativo em caso de erro.
     (void)path;
     (void)value;
+
+    FILE *ftpr = fopen(path,"r");
+    
+    if(ftpr == NULL) {
+        return -ENOSYS;
+    }
+
+    int found = fscanf(ftpr,"%i",value);
+
+    if(found > 0) {
+        return 0;
+    }
+
     return -ENOSYS;
 }
 
