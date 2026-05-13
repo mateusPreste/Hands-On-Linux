@@ -45,7 +45,6 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
     int value = 0;
 
     (void)sys_obj;
-    (void)attr_name;
 
     // TASK 3.1: esta funcao e chamada quando o usuario le um arquivo com cat.
     // Exemplo: cat /sys/kernel/smartlamp/ldr
@@ -55,8 +54,16 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
     // - "ldr"       deve retornar mock_ldr
     // - "threshold" deve retornar mock_threshold
     //
-    // Use strcmp() para comparar attr_name e escolha qual valor colocar
+    // Use strcmp() para comparar attr_name e escolher qual valor colocar
     // na variavel value antes do sprintf().
+
+    if (strcmp(attr_name, "led") == 0) {
+        value = mock_led;
+    } else if (strcmp(attr_name, "ldr") == 0) {
+        value = mock_ldr;
+    } else if (strcmp(attr_name, "threshold") == 0) {
+        value = mock_threshold;
+    }
 
     return sprintf(buff, "%d\n", value);
 }
@@ -74,7 +81,6 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
         return ret;
 
     value = clamp_percent(value);
-    (void)attr_name;
 
     // TASK 3.1: esta funcao e chamada quando o usuario escreve em um arquivo.
     // Exemplo: echo 75 | sudo tee /sys/kernel/smartlamp/ldr
@@ -87,6 +93,14 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
     // O valor recebido ja foi convertido e limitado para 0..100 na variavel value.
     // Diferente do driver real, neste mock o ldr pode receber escrita para simular luz.
     // Use strcmp() para comparar attr_name e atualizar a variavel correta.
+
+    if (strcmp(attr_name, "led") == 0) {
+        mock_led = value;
+    } else if (strcmp(attr_name, "ldr") == 0) {
+        mock_ldr = value;
+    } else if (strcmp(attr_name, "threshold") == 0) {
+        mock_threshold = value;
+    }
 
     return count;
 }
