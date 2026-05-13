@@ -5,6 +5,7 @@
 int ledValue = 0;           // Intensidade (0-100)
 int thresholdValue = 50;    // Limiar de ativação (0-100)
 const int ldrMax = 4095;    // Valor maximo lido
+const int ldrMin = 1400;    // Valor minimo lido
 
 unsigned long previousMillis = 0; 
 const long interval = 2000; // Intervalo de 2 segundos
@@ -125,5 +126,5 @@ int ldrGetValue()
 {
   int raw = analogRead(LDR_PIN);
   // Normaliza a leitura do LDR de 0-4095 para 0-100
-  return map(raw, 0, ldrMax, 0, 100);
+  return map(raw, 1590, ldrMax, 0, 100);
 }
