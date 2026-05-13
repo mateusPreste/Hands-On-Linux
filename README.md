@@ -24,7 +24,7 @@ Bem-vindo ao repositório da Equipe 0X do HandsON de Linux do DevTITANS! Este pr
 <img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
 <img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
 
-- **Nome do(a) Aluno(a) 01:** Desenvolvedor do Firmware e Mantenedor do Projeto
+- **Thales José de Oliveira Assunção:** Desenvolvedor do Firmware e Mantenedor do Projeto
 - **Nome do(a) Aluno(a) 02:** Desenvolvedor do Firmware
 - **Nome do(a) Aluno(a) 03:** Desenvolvedor do Driver Linux
 - **Laura Nunes Belem:** Desenvolvedor do Driver Linux
