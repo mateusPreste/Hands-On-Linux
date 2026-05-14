@@ -15,7 +15,7 @@ void setup()
   Serial.begin(115200);
   pinMode(LED_PIN, OUTPUT);
   pinMode(LDR_PIN, INPUT);
-  
+  ledValue = 0;
   Serial.printf("SmartLamp Initialized.\n");
   
   ledUpdate(); // Garante o estado inicial do LED
@@ -40,23 +40,23 @@ void loop()
   {
     previousMillis = currentMillis;
     
-    int currentLDR = ldrGetValue(); // Passo 5
+    int currentLDR = ldrGetValue();
     
     // Envio automático do valor do LDR normalizado
     Serial.print("RES GET_LDR ");
     Serial.println(currentLDR);
 
     // Ativação automática caso limiar seja ultrapassado
-    if (currentLDR > thresholdValue) 
-    {
-      ledValue = 100;
-    } 
-    else 
-    {
-      ledValue = 0;
-    }
+    //if (currentLDR > thresholdValue) 
+    //{
+      //ledValue = 100;
+    //} 
+    //else 
+    //{
+      //ledValue = 0;
+    //}
     
-    ledUpdate();
+    //ledUpdate();
     
   }
 }
@@ -125,5 +125,5 @@ int ldrGetValue()
 {
   int raw = analogRead(LDR_PIN);
   // Normaliza a leitura do LDR de 0-4095 para 0-100
-  return map(raw, 0, ldrMax, 0, 100);
+  return map(raw, 1590, ldrMax, 0, 100);
 }
