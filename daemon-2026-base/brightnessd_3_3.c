@@ -38,18 +38,40 @@ static int __attribute__((unused)) clamp(int value, int min, int max)
 static int read_int_file(const char *path, int *value)
 {
     // TASK 3.3: reaproveite a implementacao da task 3.2.
-    (void)path;
-    (void)value;
-    return -ENOSYS;
+    FILE *file = fopen(path, "r");
+    if (file == NULL) {
+        return -EIO;
+    }
+    
+    if (fscanf(file, "%d", value) != 1) {
+        fclose(file);
+        return -EIO;
+    }
+    
+    fclose(file);
+    return 0;
 }
 
 static int __attribute__((unused)) write_int_file(const char *path, int value)
 {
     // TASK 3.3: abra path para escrita e escreva value seguido de '\n'.
     // Use essa funcao para atualizar o brilho real da tela.
-    (void)path;
-    (void)value;
+    //(void)path;
+    //(void)value;
     return -ENOSYS;
+
+    FILE *file = fopen(path, "w");
+    if (file == NULL) {
+        return -EIO;
+    }
+    
+    if (fprintf(file, "%d\n", value) < 0) {
+        fclose(file);
+        return -EIO;
+    }
+    
+    fclose(file);
+    return 0;
 }
 
 static int ldr_to_brightness(int ldr, int max_brightness)
@@ -58,9 +80,15 @@ static int ldr_to_brightness(int ldr, int max_brightness)
 
     // TASK 3.3: limite o LDR para 0-100, aplique MIN_PERCENT
     // e converta o percentual para a escala 1..max_brightness.
-    percent = MIN_PERCENT;
-    (void)ldr;
-    (void)max_brightness;
+    //percent = MIN_PERCENT;
+
+    if (MIN_PERCENT <= ldr && ldr <= 100) {
+        percent = ldr*max_brightness/100;
+    } else if (ldr <= MIN_PERCENT) {
+        percent = MIN_PERCENT*max_brightness/100;
+    }
+    //(void)ldr;
+    //(void)max_brightness;
     return percent;
 }
 
