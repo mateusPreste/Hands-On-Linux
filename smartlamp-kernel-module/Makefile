@@ -6,7 +6,7 @@
 #   Tarefa 2.3: obj-m += serial_read_2025.o
 #   Tarefa 2.4: obj-m += sysfs_2025.o
 #   Tarefa 3.1: obj-m += test_driver.o
-obj-m += ALTERE_PARA_O_ARQUIVO_DA_TASK.o
+obj-m += serial_write_2025.o
 PWD := $(CURDIR)
 
 all:
