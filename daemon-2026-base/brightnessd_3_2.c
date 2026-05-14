@@ -41,7 +41,7 @@ static int read_int_file(const char *path, int *value)
 
 static int ldr_to_percent(int ldr)
 {
-    int percent = 100 - (ldr * 100 / 4095);
+    int percent = ldr;
 
     if (percent < MIN_PERCENT)
     {
