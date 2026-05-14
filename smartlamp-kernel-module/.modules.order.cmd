@@ -1,1 +1,1 @@
-savedcmd_modules.order := {   echo test_driver.o; :; } > modules.order
+cmd_/home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/modules.order := {   echo /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/test_driver.ko; :; } | awk '!x[$$0]++' - > /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/modules.order

@@ -1,1 +1,1 @@
-savedcmd_Module.symvers :=  /usr/src/linux-headers-6.17.0-23-generic/scripts/mod/modpost -M -m -b -x -a      -o Module.symvers -T modules.order -i /usr/src/linux-headers-6.17.0-23-generic/Module.symvers -e 
+cmd_/home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/Module.symvers := sed 's/\.ko$$/\.o/' /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/modules.order | scripts/mod/modpost -m -a  -o /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/Module.symvers -e -i Module.symvers   -T -

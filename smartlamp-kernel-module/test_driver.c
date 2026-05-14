@@ -78,17 +78,14 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
 
     value = clamp_percent(value);
 
-    if (strcmp(attr_name, "led") == 0)
-    {
-        value = mock_led;
-    }
-    else if (strcmp(attr_name, "ldr") == 0)
-    {
-        value = mock_ldr;
-    }
-    else if (strcmp(attr_name, "threshold") == 0)
-    {
-        value = mock_threshold;
+   if (strcmp(attr_name, "led") == 0) {
+        mock_led = (int)value;
+    } 
+    else if (strcmp(attr_name, "ldr") == 0) {
+        mock_ldr = (int)value;
+    } 
+    else if (strcmp(attr_name, "threshold") == 0) {
+        mock_threshold = (int)value;
     }
     return count;
 }

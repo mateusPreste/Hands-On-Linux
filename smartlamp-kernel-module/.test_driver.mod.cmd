@@ -1,1 +1,1 @@
-savedcmd_test_driver.mod := printf '%s\n'   test_driver.o | awk '!x[$$0]++ { print("./"$$0) }' > test_driver.mod
+cmd_/home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/test_driver.mod := { echo  /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/test_driver.o;  echo; } > /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/test_driver.mod

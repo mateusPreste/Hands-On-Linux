@@ -1,1 +1,2 @@
-./test_driver.o
+/home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/test_driver.o
+
