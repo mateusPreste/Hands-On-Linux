@@ -15,7 +15,7 @@ void setup()
   Serial.begin(115200);
   pinMode(LED_PIN, OUTPUT);
   pinMode(LDR_PIN, INPUT);
-  
+  ledValue = 0;
   Serial.printf("SmartLamp Initialized.\n");
   
   ledUpdate(); // Garante o estado inicial do LED
@@ -47,16 +47,16 @@ void loop()
     Serial.println(currentLDR);
 
     // Ativação automática caso limiar seja ultrapassado
-    if (currentLDR > thresholdValue) 
-    {
-      ledValue = 100;
-    } 
-    else 
-    {
-      ledValue = 0;
-    }
+    //if (currentLDR > thresholdValue) 
+    //{
+      //ledValue = 100;
+    //} 
+    //else 
+    //{
+      //ledValue = 0;
+    //}
     
-    ledUpdate();
+    //ledUpdate();
     
   }
 }
