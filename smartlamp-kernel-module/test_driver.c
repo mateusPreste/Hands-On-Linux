@@ -30,6 +30,7 @@ static int mock_led __maybe_unused;
 static int mock_ldr __maybe_unused = 50;
 static int mock_threshold __maybe_unused = 50;
 
+// Função que garante que o valor está entre 0 e 100
 static int clamp_percent(long value)
 {
     if (value < 0)
@@ -39,58 +40,57 @@ static int clamp_percent(long value)
     return value;
 }
 
+// Função de LEITURA (chamada ao usar o comando 'cat')
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff)
 {
     const char *attr_name = attr->attr.name;
     int value = 0;
 
-    (void)sys_obj;
-    (void)attr_name;
+    (void)sys_obj; // Evita warning de variável não utilizada
 
-    // TASK 3.1: esta funcao e chamada quando o usuario le um arquivo com cat.
-    // Exemplo: cat /sys/kernel/smartlamp/ldr
-    //
-    // attr_name contem o nome do arquivo lido:
-    // - "led"       deve retornar mock_led
-    // - "ldr"       deve retornar mock_ldr
-    // - "threshold" deve retornar mock_threshold
-    //
-    // Use strcmp() para comparar attr_name e escolha qual valor colocar
-    // na variavel value antes do sprintf().
+    // Compara o nome do atributo e define o 'value' com a variável correta
+    if (strcmp(attr_name, "led") == 0) {
+        value = mock_led;
+    } else if (strcmp(attr_name, "ldr") == 0) {
+        value = mock_ldr;
+    } else if (strcmp(attr_name, "threshold") == 0) {
+        value = mock_threshold;
+    }
 
+    // Retorna o valor formatado como texto para o utilizador
     return sprintf(buff, "%d\n", value);
 }
 
+// Função de ESCRITA (chamada ao usar o comando 'echo')
 static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff, size_t count)
 {
     const char *attr_name = attr->attr.name;
     long value;
     int ret;
 
-    (void)sys_obj;
+    (void)sys_obj; // Evita warning de variável não utilizada
 
+    // Converte o texto recebido para um número longo (base 10)
     ret = kstrtol(buff, 10, &value);
     if (ret)
         return ret;
 
+    // Limita o valor entre 0 e 100
     value = clamp_percent(value);
-    (void)attr_name;
 
-    // TASK 3.1: esta funcao e chamada quando o usuario escreve em um arquivo.
-    // Exemplo: echo 75 | sudo tee /sys/kernel/smartlamp/ldr
-    //
-    // attr_name contem o nome do arquivo escrito:
-    // - "led"       deve atualizar mock_led
-    // - "ldr"       deve atualizar mock_ldr
-    // - "threshold" deve atualizar mock_threshold
-    //
-    // O valor recebido ja foi convertido e limitado para 0..100 na variavel value.
-    // Diferente do driver real, neste mock o ldr pode receber escrita para simular luz.
-    // Use strcmp() para comparar attr_name e atualizar a variavel correta.
+    // Compara o nome do atributo e guarda o 'value' na variável correta
+    if (strcmp(attr_name, "led") == 0) {
+        mock_led = value;
+    } else if (strcmp(attr_name, "ldr") == 0) {
+        mock_ldr = value;
+    } else if (strcmp(attr_name, "threshold") == 0) {
+        mock_threshold = value;
+    }
 
     return count;
 }
 
+// Função de Inicialização do Módulo
 static int __init smartlamp_mock_init(void)
 {
     int ret;
@@ -110,6 +110,7 @@ static int __init smartlamp_mock_init(void)
     return 0;
 }
 
+// Função de Limpeza ao remover o módulo
 static void __exit smartlamp_mock_exit(void)
 {
     if (sys_obj) {
