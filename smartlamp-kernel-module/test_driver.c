@@ -47,6 +47,15 @@ static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, c
     (void)sys_obj;
     (void)attr_name;
 
+    if(strcmp(attr_name,"ldr")) {
+        value = mock_ldr;
+    }
+    if(strcmp(attr_name,"led")) {
+        value = mock_led;
+    }
+    if(strcmp(attr_name,"threshold")) {
+        value = mock_threshold;
+    }
     // TASK 3.1: esta funcao e chamada quando o usuario le um arquivo com cat.
     // Exemplo: cat /sys/kernel/smartlamp/ldr
     //
@@ -76,6 +85,15 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
     value = clamp_percent(value);
     (void)attr_name;
 
+    if(strcmp(attr_name,"ldr")) {
+        mock_ldr = value;
+    }
+    if(strcmp(attr_name,"led")) {
+        mock_led = value;
+    }
+    if(strcmp(attr_name,"threshold")) {
+        mock_threshold = value;
+    }
     // TASK 3.1: esta funcao e chamada quando o usuario escreve em um arquivo.
     // Exemplo: echo 75 | sudo tee /sys/kernel/smartlamp/ldr
     //
