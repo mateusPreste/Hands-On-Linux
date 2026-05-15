@@ -53,6 +53,15 @@ static int ldr_to_percent(int ldr)
 {
     // TASK 3.2: limite o LDR para 0-100 e aplique um brilho minimo.
     (void)ldr;
+        
+    if(ldr > MIN_PERCENT && ldr <= 100){
+        return ldr;
+    }
+    
+    if(ldr > 100) {
+        return 100;
+    }
+
     return MIN_PERCENT;
 }
 
