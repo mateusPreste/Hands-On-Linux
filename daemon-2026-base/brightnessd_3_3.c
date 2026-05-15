@@ -66,7 +66,7 @@ static int __attribute__((unused)) write_int_file(const char *path, int value)
     (void)path;
     (void)value;
 
-    FILE *ftpr = fopen(path, "r");
+    FILE *ftpr = fopen(path, "w");
 
     if (ftpr == NULL)
     {
@@ -74,6 +74,7 @@ static int __attribute__((unused)) write_int_file(const char *path, int value)
     }
 
     int found = fprintf(ftpr, "%i", value);
+
     fclose(ftpr);
     if (found > 0)
     {
@@ -92,6 +93,14 @@ static int ldr_to_brightness(int ldr, int max_brightness)
     percent = MIN_PERCENT;
     (void)ldr;
     (void)max_brightness;
+    int comparison = ldr * (max_brightness / 100);
+
+    if (comparison < percent)
+    {
+        return percent;
+    }
+    percent = comparison;
+
     return percent;
 }
 
@@ -173,6 +182,10 @@ int main(int argc, char **argv)
             brightness = ldr_to_brightness(ldr, max_brightness);
 
             // TASK 3.3: escreva brightness em brightness_path usando write_int_file().
+            if (write_int_file(brightness_path, brightness) != 0)
+            {
+                return EXIT_FAILURE;
+            }
             printf("ldr=%d brightness=%d max_brightness=%d\n", ldr, brightness, max_brightness);
             fflush(stdout);
         }
