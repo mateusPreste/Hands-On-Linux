@@ -41,7 +41,7 @@ static int read_int_file(const char *path, int *value)
     }
 
     int found = fscanf(ftpr,"%i",value);
-
+    fclose(ftpr);
     if(found > 0) {
         return 0;
     }
