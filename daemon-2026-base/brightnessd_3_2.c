@@ -31,15 +31,30 @@ static int read_int_file(const char *path, int *value)
 {
     // TASK 3.2: abra path para leitura e leia um numero inteiro.
     // Retorne 0 em caso de sucesso ou um codigo negativo em caso de erro.
-    (void)path;
-    (void)value;
-    return -ENOSYS;
+    FILE *file = fopen(path, "r");
+    if (file == NULL) {
+        return -EIO;
+    }
+    
+    if (fscanf(file, "%d", value) != 1) {
+        fclose(file);
+        return -EIO;
+    }
+    
+    fclose(file);
+    return 0;
 }
 
 static int ldr_to_percent(int ldr)
 {
     // TASK 3.2: limite o LDR para 0-100 e aplique um brilho minimo.
-    (void)ldr;
+    //(void)ldr;
+
+    if (MIN_PERCENT <= ldr && ldr <= 100) {
+        return ldr;
+    } else if (ldr <= MIN_PERCENT) {
+        return MIN_PERCENT;
+    }
     return MIN_PERCENT;
 }
 

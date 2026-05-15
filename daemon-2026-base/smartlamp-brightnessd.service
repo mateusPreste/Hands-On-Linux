@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/smartlamp-brightnessd -l /sys/kernel/smartlamp/ldr -b /sys/class/backlight/intel_backlight -i 1000
+ExecStart=/usr/local/bin/smartlamp-brightnessd -l /sys/kernel/smartlamp/ldr -b /sys/class/backlight/intel_backlight -i 4800
 Restart=always
 RestartSec=2
 
