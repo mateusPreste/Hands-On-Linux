@@ -37,31 +37,54 @@ static int __attribute__((unused)) clamp(int value, int min, int max)
 
 static int read_int_file(const char *path, int *value)
 {
-    // TASK 3.3: reaproveite a implementacao da task 3.2.
-    (void)path;
-    (void)value;
-    return -ENOSYS;
+    FILE *file;
+
+    file = fopen(path, "r");
+    if (!file)
+        return -errno;
+
+    if (fscanf(file, "%d", value) != 1) {
+        fclose(file);
+        return -EIO;
+    }
+
+    fclose(file);
+    return 0;
 }
 
-static int __attribute__((unused)) write_int_file(const char *path, int value)
+static int write_int_file(const char *path, int value)
 {
-    // TASK 3.3: abra path para escrita e escreva value seguido de '\n'.
-    // Use essa funcao para atualizar o brilho real da tela.
-    (void)path;
-    (void)value;
-    return -ENOSYS;
+    FILE *file;
+
+    file = fopen(path, "w");
+    if (!file)
+        return -errno;
+
+    if (fprintf(file, "%d\n", value) < 0) {
+        fclose(file);
+        return -EIO;
+    }
+
+    fclose(file);
+    return 0;
 }
 
 static int ldr_to_brightness(int ldr, int max_brightness)
 {
     int percent;
+    int brightness;
 
-    // TASK 3.3: limite o LDR para 0-100, aplique MIN_PERCENT
-    // e converta o percentual para a escala 1..max_brightness.
-    percent = MIN_PERCENT;
-    (void)ldr;
-    (void)max_brightness;
-    return percent;
+    // Limita o LDR para 0-100
+    percent = clamp(ldr, 0, 100);
+
+    // Aplica brilho minimo se o valor for muito baixo
+    if (percent < MIN_PERCENT)
+        percent = MIN_PERCENT;
+
+    // Converte o percentual para a escala real de brilho
+    brightness = (percent * max_brightness) / 100;
+
+    return brightness;
 }
 
 static void sleep_ms(int milliseconds)
@@ -135,7 +158,10 @@ int main(int argc, char **argv)
         if (read_int_file(config.ldr_path, &ldr) == 0) {
             brightness = ldr_to_brightness(ldr, max_brightness);
 
-            // TASK 3.3: escreva brightness em brightness_path usando write_int_file().
+            if (write_int_file(brightness_path, brightness) < 0) {
+                fprintf(stderr, "failed to write %s\n", brightness_path);
+            }
+
             printf("ldr=%d brightness=%d max_brightness=%d\n", ldr, brightness, max_brightness);
             fflush(stdout);
         } else {
