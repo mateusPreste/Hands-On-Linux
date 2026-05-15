@@ -33,6 +33,19 @@ static int read_int_file(const char *path, int *value)
     // Retorne 0 em caso de sucesso ou um codigo negativo em caso de erro.
     (void)path;
     (void)value;
+
+    FILE *ftpr = fopen(path,"r");
+    
+    if(ftpr == NULL) {
+        return -ENOSYS;
+    }
+
+    int found = fscanf(ftpr,"%i",value);
+    fclose(ftpr);
+    if(found > 0) {
+        return 0;
+    }
+
     return -ENOSYS;
 }
 
@@ -40,6 +53,15 @@ static int ldr_to_percent(int ldr)
 {
     // TASK 3.2: limite o LDR para 0-100 e aplique um brilho minimo.
     (void)ldr;
+        
+    if(ldr > MIN_PERCENT && ldr <= 100){
+        return ldr;
+    }
+    
+    if(ldr > 100) {
+        return 100;
+    }
+
     return MIN_PERCENT;
 }
 
