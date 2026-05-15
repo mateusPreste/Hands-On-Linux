@@ -29,18 +29,33 @@ static int __attribute__((unused)) clamp(int value, int min, int max)
 
 static int read_int_file(const char *path, int *value)
 {
-    // TASK 3.2: abra path para leitura e leia um numero inteiro.
-    // Retorne 0 em caso de sucesso ou um codigo negativo em caso de erro.
-    (void)path;
-    (void)value;
-    return -ENOSYS;
+    FILE *file;
+
+    file = fopen(path, "r");
+    if (!file)
+        return -errno;
+
+    if (fscanf(file, "%d", value) != 1) {
+        fclose(file);
+        return -EIO;
+    }
+
+    fclose(file);
+    return 0;
 }
 
 static int ldr_to_percent(int ldr)
 {
-    // TASK 3.2: limite o LDR para 0-100 e aplique um brilho minimo.
-    (void)ldr;
-    return MIN_PERCENT;
+    int percent;
+
+    // Limita o LDR para 0-100
+    percent = clamp(ldr, 0, 100);
+
+    // Aplica brilho minimo se o valor for muito baixo
+    if (percent < MIN_PERCENT)
+        percent = MIN_PERCENT;
+
+    return percent;
 }
 
 static void sleep_ms(int milliseconds)
