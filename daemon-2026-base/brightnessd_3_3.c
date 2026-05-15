@@ -65,6 +65,21 @@ static int __attribute__((unused)) write_int_file(const char *path, int value)
     // Use essa funcao para atualizar o brilho real da tela.
     (void)path;
     (void)value;
+
+    FILE *ftpr = fopen(path, "r");
+
+    if (ftpr == NULL)
+    {
+        return -ENOSYS;
+    }
+
+    int found = fprintf(ftpr, "%i", value);
+    fclose(ftpr);
+    if (found > 0)
+    {
+        return 0;
+    }
+
     return -ENOSYS;
 }
 
