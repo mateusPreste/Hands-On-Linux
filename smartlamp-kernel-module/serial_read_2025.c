@@ -15,8 +15,8 @@ static uint usb_in, usb_out;                       // Endereços das portas de e
 static char *usb_in_buffer, *usb_out_buffer;       // Buffers de entrada e saída da USB
 static int usb_max_size;                           // Tamanho máximo de uma mensagem USB
 
-#define VENDOR_ID   SUBSTITUA_PELO_VENDORID /* Encontre o VendorID  do smartlamp */
-#define PRODUCT_ID  SUBSTITUA_PELO_PRODUCTID /* Encontre o ProductID do smartlamp */
+#define VENDOR_ID   0x10c4 /* VendorID do smartlamp (CP2102) */
+#define PRODUCT_ID  0xea60 /* ProductID do smartlamp (CP2102) */
 static const struct usb_device_id id_table[] = { { USB_DEVICE(VENDOR_ID, PRODUCT_ID) }, {} };
 
 static int  usb_probe(struct usb_interface *ifce, const struct usb_device_id *id); // Executado quando o dispositivo é conectado na USB
@@ -101,10 +101,10 @@ static int usb_probe(struct usb_interface *interface, const struct usb_device_id
     // TASK 2.3: Leitura de dados periódicos enviados pelo firmware
     // O firmware envia RES GET_LDR Z automaticamente a cada 2 segundos
     // Descomente as linhas abaixo após implementar usb_read_serial
-    // ret = usb_read_serial();
-    // if (ret >= 0) {
-    //     printk(KERN_INFO "SmartLamp: Valor do LDR recebido: %d\n", ret);
-    // }
+    ret = usb_read_serial();
+    if (ret >= 0) {
+        printk(KERN_INFO "SmartLamp: Valor do LDR recebido: %d\n", ret);
+    }
 
     return 0;
 }
@@ -147,21 +147,61 @@ static int usb_read_serial(void) {
     int ret, actual_size;
     int recv_size = 0;  // Quantidade de caracteres já recebidos em recv_line
     int i;
+    int ldr_value = -1;
+    bool message_complete = false;
 
     printk(KERN_INFO "SmartLamp: Aguardando resposta do dispositivo...\n");
+
+    // Limpa o buffer de sujeiras de memórias passadas
+    memset(recv_line, 0, MAX_RECV_LINE);
 
     // TASK 2.3: Implemente a leitura de dados da porta serial
     //
     // IMPORTANTE: Os dados podem chegar fragmentados (byte a byte ou em blocos)
     // Você deve acumular os dados em recv_line até encontrar o caractere '\n'
-    //
-    // Dicas:
-    // - Use um loop para continuar lendo até encontrar '\n'
-    // - Use usb_bulk_msg com usb_rcvbulkpipe para cada leitura
-    // - Copie os dados de usb_in_buffer para recv_line
-    // - Cuidado com buffer overflow: verifique recv_size < MAX_RECV_LINE
-    // - Defina um timeout adequado (ex: 2000ms)
-    // - Após receber a linha completa, extraia o valor numérico com sscanf
+    while (!message_complete) {
+        // Timeout de 3000ms para compensar os 2000ms do firmware do ESP32
+        ret = usb_bulk_msg(smartlamp_device, 
+                           usb_rcvbulkpipe(smartlamp_device, usb_in),
+                           usb_in_buffer, 
+                           usb_max_size, 
+                           &actual_size, 
+                           3000);
 
+        if (ret) {
+            printk(KERN_ERR "SmartLamp: Erro ao ler porta USB (Codigo: %d)\n", ret);
+            return -1;
+        }
+
+        // Copia os dados recebidos para recv_line, acumulando byte a byte
+        for (i = 0; i < actual_size; i++) {
+            if (recv_size < MAX_RECV_LINE - 1) { // Proteção contra buffer overflow
+                recv_line[recv_size] = usb_in_buffer[i];
+                
+                // Se achou o caractere de nova linha, finaliza a string e sai
+                if (recv_line[recv_size] == '\ n') {
+                    recv_line[recv_size + 1] = '\0';
+                    message_complete = true;
+                    break;
+                }
+                recv_size++;
+            } else {
+                printk(KERN_WARNING "SmartLamp: Buffer cheio! Truncando string.\n");
+                recv_line[MAX_RECV_LINE - 1] = '\0';
+                message_complete = true;
+                break;
+            }
+        }
+    }
+
+    // Imprime a linha inteira acumulada no buffer
+    printk(KERN_INFO "SmartLamp: Mensagem bruta recebida: %s", recv_line);
+
+    // Extrai o valor numérico com sscanf e retorna
+    if (sscanf(recv_line, "RES GET_LDR %d", &ldr_value) == 1) {
+        return ldr_value;
+    }
+
+    printk(KERN_WARNING "SmartLamp: Nao foi possivel identificar o valor.\n");
     return -1;
 }
