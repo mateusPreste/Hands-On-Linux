@@ -14,7 +14,8 @@
 
 static volatile sig_atomic_t running = 1;
 
-struct config {
+struct config
+{
     const char *ldr_path;
     const char *backlight_path;
     int interval_ms;
@@ -40,6 +41,21 @@ static int read_int_file(const char *path, int *value)
     // TASK 3.3: reaproveite a implementacao da task 3.2.
     (void)path;
     (void)value;
+
+    FILE *ftpr = fopen(path, "r");
+
+    if (ftpr == NULL)
+    {
+        return -ENOSYS;
+    }
+
+    int found = fscanf(ftpr, "%i", value);
+    fclose(ftpr);
+    if (found > 0)
+    {
+        return 0;
+    }
+
     return -ENOSYS;
 }
 
@@ -49,6 +65,22 @@ static int __attribute__((unused)) write_int_file(const char *path, int value)
     // Use essa funcao para atualizar o brilho real da tela.
     (void)path;
     (void)value;
+
+    FILE *ftpr = fopen(path, "w");
+
+    if (ftpr == NULL)
+    {
+        return -ENOSYS;
+    }
+
+    int found = fprintf(ftpr, "%i", value);
+
+    fclose(ftpr);
+    if (found > 0)
+    {
+        return 0;
+    }
+
     return -ENOSYS;
 }
 
@@ -61,6 +93,14 @@ static int ldr_to_brightness(int ldr, int max_brightness)
     percent = MIN_PERCENT;
     (void)ldr;
     (void)max_brightness;
+    int comparison = ldr * (max_brightness / 100);
+
+    if (comparison < percent)
+    {
+        return percent;
+    }
+    percent = comparison;
+
     return percent;
 }
 
@@ -71,7 +111,8 @@ static void sleep_ms(int milliseconds)
     request.tv_sec = milliseconds / 1000;
     request.tv_nsec = (long)(milliseconds % 1000) * 1000000L;
 
-    while (running && nanosleep(&request, &request) == -1 && errno == EINTR) {
+    while (running && nanosleep(&request, &request) == -1 && errno == EINTR)
+    {
     }
 }
 
@@ -79,8 +120,10 @@ static int parse_args(int argc, char **argv, struct config *config)
 {
     int opt;
 
-    while ((opt = getopt(argc, argv, "l:b:i:h")) != -1) {
-        switch (opt) {
+    while ((opt = getopt(argc, argv, "l:b:i:h")) != -1)
+    {
+        switch (opt)
+        {
         case 'l':
             config->ldr_path = optarg;
             break;
@@ -123,22 +166,31 @@ int main(int argc, char **argv)
     signal(SIGINT, handle_signal);
     signal(SIGTERM, handle_signal);
 
-    if (read_int_file(max_path, &max_brightness) < 0 || max_brightness <= 0) {
+    if (read_int_file(max_path, &max_brightness) < 0 || max_brightness <= 0)
+    {
         fprintf(stderr, "failed to read %s\n", max_path);
         return EXIT_FAILURE;
     }
 
-    while (running) {
+    while (running)
+    {
         int ldr;
         int brightness;
 
-        if (read_int_file(config.ldr_path, &ldr) == 0) {
+        if (read_int_file(config.ldr_path, &ldr) == 0)
+        {
             brightness = ldr_to_brightness(ldr, max_brightness);
 
             // TASK 3.3: escreva brightness em brightness_path usando write_int_file().
+            if (write_int_file(brightness_path, brightness) != 0)
+            {
+                return EXIT_FAILURE;
+            }
             printf("ldr=%d brightness=%d max_brightness=%d\n", ldr, brightness, max_brightness);
             fflush(stdout);
-        } else {
+        }
+        else
+        {
             fprintf(stderr, "failed to read %s\n", config.ldr_path);
         }
 
