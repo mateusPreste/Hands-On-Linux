@@ -39,28 +39,31 @@ static int clamp_percent(long value)
     return value;
 }
 
+// TASK 3.1: esta funcao e chamada quando o usuario le um arquivo com cat.
 static ssize_t attr_show(struct kobject *sys_obj, struct kobj_attribute *attr, char *buff)
 {
     const char *attr_name = attr->attr.name;
     int value = 0;
 
     (void)sys_obj;
-    (void)attr_name;
-
-    // TASK 3.1: esta funcao e chamada quando o usuario le um arquivo com cat.
-    // Exemplo: cat /sys/kernel/smartlamp/ldr
-    //
-    // attr_name contem o nome do arquivo lido:
-    // - "led"       deve retornar mock_led
-    // - "ldr"       deve retornar mock_ldr
-    // - "threshold" deve retornar mock_threshold
-    //
-    // Use strcmp() para comparar attr_name e escolha qual valor colocar
-    // na variavel value antes do sprintf().
+    
+    if (strcmp(attr_name, "led") == 0)
+    {
+        value = mock_led;
+    }
+    else if (strcmp(attr_name, "ldr") == 0)
+    {
+        value = mock_ldr;
+    }
+    else if (strcmp(attr_name, "threshold") == 0)
+    {
+        value = mock_threshold;
+    }
 
     return sprintf(buff, "%d\n", value);
 }
 
+// TASK 3.1: esta funcao e chamada quando o usuario escreve em um arquivo.
 static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, const char *buff, size_t count)
 {
     const char *attr_name = attr->attr.name;
@@ -74,20 +77,16 @@ static ssize_t attr_store(struct kobject *sys_obj, struct kobj_attribute *attr, 
         return ret;
 
     value = clamp_percent(value);
-    (void)attr_name;
 
-    // TASK 3.1: esta funcao e chamada quando o usuario escreve em um arquivo.
-    // Exemplo: echo 75 | sudo tee /sys/kernel/smartlamp/ldr
-    //
-    // attr_name contem o nome do arquivo escrito:
-    // - "led"       deve atualizar mock_led
-    // - "ldr"       deve atualizar mock_ldr
-    // - "threshold" deve atualizar mock_threshold
-    //
-    // O valor recebido ja foi convertido e limitado para 0..100 na variavel value.
-    // Diferente do driver real, neste mock o ldr pode receber escrita para simular luz.
-    // Use strcmp() para comparar attr_name e atualizar a variavel correta.
-
+   if (strcmp(attr_name, "led") == 0) {
+        mock_led = (int)value;
+    } 
+    else if (strcmp(attr_name, "ldr") == 0) {
+        mock_ldr = (int)value;
+    } 
+    else if (strcmp(attr_name, "threshold") == 0) {
+        mock_threshold = (int)value;
+    }
     return count;
 }
 

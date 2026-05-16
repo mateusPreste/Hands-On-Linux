@@ -37,31 +37,48 @@ static int __attribute__((unused)) clamp(int value, int min, int max)
 
 static int read_int_file(const char *path, int *value)
 {
-    // TASK 3.3: reaproveite a implementacao da task 3.2.
-    (void)path;
-    (void)value;
-    return -ENOSYS;
+    FILE *file = fopen(path, "r");
+    if (!file)        return -errno;
+    if (fscanf(file, "%d", value) != 1) {
+        fclose(file);
+        return -EINVAL;
+    }
+    fclose(file);
+    return 0;
 }
 
 static int __attribute__((unused)) write_int_file(const char *path, int value)
 {
-    // TASK 3.3: abra path para escrita e escreva value seguido de '\n'.
-    // Use essa funcao para atualizar o brilho real da tela.
-    (void)path;
-    (void)value;
-    return -ENOSYS;
+    FILE *fp = fopen(path, "w");
+
+    if (fp == NULL)
+        return -errno;
+
+    fprintf(fp, "%d\n", value);
+
+    fclose(fp);
+
+    return 0;
 }
 
 static int ldr_to_brightness(int ldr, int max_brightness)
 {
     int percent;
 
-    // TASK 3.3: limite o LDR para 0-100, aplique MIN_PERCENT
-    // e converta o percentual para a escala 1..max_brightness.
-    percent = MIN_PERCENT;
-    (void)ldr;
-    (void)max_brightness;
-    return percent;
+    // Limita o valor do LDR entre 0 e 100
+    if (ldr < 0)
+        ldr = 0;
+    if (ldr > 100)
+        ldr = 100;
+
+    // Garante um brilho mínimo
+    if (ldr < MIN_PERCENT)
+        percent = MIN_PERCENT;
+    else
+        percent = ldr;
+
+    // Converte percentual para a escala 1..max_brightness
+    return (percent * max_brightness) / 100;
 }
 
 static void sleep_ms(int milliseconds)
@@ -136,6 +153,11 @@ int main(int argc, char **argv)
             brightness = ldr_to_brightness(ldr, max_brightness);
 
             // TASK 3.3: escreva brightness em brightness_path usando write_int_file().
+
+            if (write_int_file(brightness_path, brightness) != 0) {
+                fprintf(stderr, "failed to write %s\n",brightness_path);
+                }
+
             printf("ldr=%d brightness=%d max_brightness=%d\n", ldr, brightness, max_brightness);
             fflush(stdout);
         } else {

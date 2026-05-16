@@ -1,0 +1,1 @@
+cmd_/home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/test_driver.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/test_driver.ko /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/test_driver.o /home/devtitans-1/Hands-On-Linux/smartlamp-kernel-module/test_driver.mod.o;  true
